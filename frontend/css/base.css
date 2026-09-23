@@ -150,13 +150,22 @@ a { color: var(--marca); }
 
 @media (max-width: 720px) {
   :root {
-    --radio-xl: 15px;
-    --radio: 12px;
-    --radio-chico: 9px;
-    --alto-barra-inferior: 56px;
+    /* LA ESCALA DE TODA LA APLICACION EN CELULAR.
+       Casi todos los tamanos del proyecto estan en rem, y un rem sale del
+       font-size de la RAIZ, no del de body. Bajarlo aca encoge de una vez
+       titulos, textos, botones, pastillas y tablas, manteniendo las
+       proporciones entre ellos.
+       (Ponerlo en body no servia: body no cambia cuanto vale un rem, asi que
+       todo lo que declaraba su tamano en rem seguia saliendo de 16px.) */
+    font-size: 13.5px;
+
+    --radio-xl: 14px;
+    --radio: 11px;
+    --radio-chico: 8px;
+    --alto-barra-inferior: 54px;
   }
 
-  body { font-size: 14px; line-height: 1.5; }
+  body { font-size: 1rem; line-height: 1.5; }
 }
 
 /* Respeta a quien pidió menos movimiento en su sistema. */

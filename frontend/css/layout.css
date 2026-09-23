@@ -93,6 +93,37 @@
 /* El texto chico de la barra inferior no se ve en computadora. */
 .nav__texto-corto { display: none; }
 
+/* --- Notebook y tablet: la barra horizontal con nombres cortos -------------
+
+   Los ocho nombres completos necesitan 1160px de ventana. Abajo de eso la
+   navegacion no entra y se sale por la derecha: "Escuelas" queda fuera de la
+   pantalla y no hay ninguna senal de que este ahi, porque la barra scrollea
+   sin barra de desplazamiento visible. Peor todavia, al tocar un enlace el
+   navegador lo trae a la vista y corre toda la fila, asi que el proximo boton
+   que ibas a tocar se movio de lugar.
+
+   La barra inferior de celular ya tiene nombres cortos para este mismo
+   problema. Se reusan aca: el icono queda al lado y alcanza para reconocerlos. */
+
+@media (min-width: 721px) and (max-width: 1160px) {
+  .barra__interior { gap: 16px; padding: 0 14px; }
+
+  .nav { gap: 2px; }
+  .nav__enlace { padding: 8px 10px; font-size: .86rem; gap: 6px; }
+
+  .nav__texto { display: none; }
+  .nav__texto-corto { display: inline; }
+}
+
+/* Mas angosto todavia -- una ventana a media pantalla, o el zoom del navegador
+   en 150% -- ni con nombres cortos entra. Ahi se van los iconos: el nombre es
+   lo que dice a donde vas, el icono solo acompana. */
+
+@media (min-width: 721px) and (max-width: 980px) {
+  .nav__enlace { padding: 7px 9px; font-size: .82rem; }
+  .nav__enlace .icono { display: none; }
+}
+
 /* --- Contenido ------------------------------------------------------------- */
 
 .contenedor {
@@ -400,13 +431,16 @@
   }
 
   .nav__enlace {
-    flex: 0 0 auto;
+    /* Las ocho secciones se reparten el ancho en partes iguales.
+       Con un ancho minimo fijo no entraban: sumaban mas que la pantalla y las
+       dos ultimas, Grados y Escuelas, quedaban fuera de la vista sin ninguna
+       senal de que estuvieran ahi. En 375px a cada una le tocan unos 45px, que
+       sigue siendo una zona comoda para el dedo. */
+    flex: 1 1 0;
+    min-width: 0;
     flex-direction: column;
     gap: 2px;
-    /* 58px de ancho y 46 de alto: sigue siendo una zona comoda para el dedo
-       aunque el texto sea chico. */
-    min-width: 58px;
-    padding: 5px 6px;
+    padding: 5px 4px;
     border-radius: var(--radio-chico);
     font-size: .63rem;
     font-weight: 700;

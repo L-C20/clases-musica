@@ -432,8 +432,15 @@ textarea.control { resize: vertical; line-height: 1.5; }
   inset: 0;
   z-index: 50;
   display: flex;
-  align-items: center;
+  /* flex-start + margin:auto en el modal, y NO align-items:center.
+     Centrado de verdad, cuando el contenido no entra el navegador recorta por
+     arriba y por abajo y esos pedazos quedan inalcanzables: no hay forma de
+     llegar al boton Guardar. Con margin:auto queda centrado igual mientras
+     sobra lugar, y en cuanto falta se puede desplazar de punta a punta. */
+  align-items: flex-start;
   justify-content: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 18px;
   background: rgba(23, 23, 51, .42);
   backdrop-filter: blur(3px);
@@ -442,11 +449,22 @@ textarea.control { resize: vertical; line-height: 1.5; }
 }
 
 .modal {
+  --modal-relleno: 26px;
+
   width: 100%;
   max-width: 540px;
+  margin: auto;
+
+  /* dvh y no vh: en el telefono, cuando se abre el teclado, vh sigue midiendo
+     la pantalla ENTERA, asi que el modal queda mas alto que el espacio que
+     realmente queda libre y su mitad de abajo -- justo donde esta Guardar --
+     termina debajo del teclado. dvh mide lo que se ve de verdad.
+     La linea con vh queda primero como respaldo para navegadores viejos. */
   max-height: 90vh;
+  max-height: 90dvh;
+
   overflow-y: auto;
-  padding: 26px;
+  padding: var(--modal-relleno);
   background: var(--panel);
   border-radius: var(--radio-xl);
   box-shadow: var(--sombra-alta);
@@ -466,11 +484,20 @@ textarea.control { resize: vertical; line-height: 1.5; }
   border-radius: var(--radio-chico);
 }
 
+/* El pie queda pegado abajo mientras se desplaza el formulario. En un
+   formulario largo, o con el teclado abierto, Guardar sigue estando ahi sin
+   tener que buscarlo. Los margenes negativos lo estiran hasta los bordes del
+   modal para que tape lo que pasa por debajo. */
 .modal__pie {
+  position: sticky;
+  bottom: calc(var(--modal-relleno) * -1);
   display: flex;
   justify-content: flex-end;
   gap: 9px;
-  margin-top: 22px;
+  margin: 22px calc(var(--modal-relleno) * -1) calc(var(--modal-relleno) * -1);
+  padding: 13px var(--modal-relleno) var(--modal-relleno);
+  background: var(--panel);
+  border-top: 1px solid var(--borde);
 }
 
 @keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
@@ -604,9 +631,9 @@ textarea.control { resize: vertical; line-height: 1.5; }
   .campo__etiqueta { font-size: .8rem; }
   .campo__ayuda { font-size: .75rem; }
 
-  .modal { padding: 18px; border-radius: var(--radio); }
+  .modal { --modal-relleno: 18px; border-radius: var(--radio); }
   .modal__titulo { font-size: 1.05rem; margin-bottom: 14px; }
-  .modal__pie { margin-top: 16px; }
+  .modal__pie { margin-top: 16px; padding-top: 11px; }
   .form { gap: 12px; }
 
   .aviso { padding: 11px 15px; font-size: .85rem; }
