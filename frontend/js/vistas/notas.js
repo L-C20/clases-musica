@@ -34,6 +34,19 @@ export async function vistaNotas(contenedor, parametros = {}) {
   let planilla = null;
   let hayCambios = false;
 
+  /*
+   * Una planilla ya guardada se abre CERRADA, igual que la de asistencia: se
+   * lee, y para cambiarle algo hay que tocar "Editar notas". Aca importa mas
+   * todavia, porque borrar el numero de un alumno le borra la nota: un roce
+   * sobre un campo no tiene que poder hacer eso.
+   *
+   * Una planilla nueva nace abierta, con el foco puesto en el primer campo.
+   */
+  let editando = false;
+
+  /** planilla guardada + sin abrir. Lo recalcula cada dibujo. */
+  let bloqueada = false;
+
   const todosLosGrados = await cache.grados();
   const escuelas = await cache.escuelas();
 
@@ -125,6 +138,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
       ])
     );
     hayCambios = false;
+    editando = !planilla.ya_registrada;
 
     dibujarPlanilla();
   }
@@ -132,6 +146,22 @@ export async function vistaNotas(contenedor, parametros = {}) {
   /* --- Dibujo ------------------------------------------------------------- */
 
   const resumen = el('p', { clase: 'resumen' });
+
+  /** Se rearma en cada dibujo; lo guardamos para poder cambiarle el texto. */
+  let botonGuardar = null;
+
+  /*
+   * El boton dice el solo en que estado esta la planilla y que va a pasar si
+   * se lo toca. No hace falta ningun cartel arriba explicandolo.
+   */
+  function actualizarBotonGuardar() {
+    if (!botonGuardar) return;
+
+    botonGuardar.disabled = false;
+    botonGuardar.textContent = bloqueada ? 'Editar notas'
+      : planilla?.ya_registrada ? 'Guardar cambios'
+      : 'Guardar notas';
+  }
 
   function actualizarResumen() {
     const notas = [...marcas.values()]
@@ -150,6 +180,8 @@ export async function vistaNotas(contenedor, parametros = {}) {
         : null,
       hayCambios ? el('span', { clase: 'resumen__pendiente' }, 'Sin guardar') : null
     );
+
+    actualizarBotonGuardar();
   }
 
   function notaValida(n) {
@@ -165,6 +197,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
       placeholder: 'Observación (opcional)',
       value: marca.observacion,
       hidden: marca.observacion === '',
+      disabled: bloqueada,
       onInput: (e) => {
         marcas.get(alumno.id).observacion = e.target.value;
         hayCambios = true;
@@ -181,6 +214,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
       step: 0.5,
       placeholder: '—',
       value: marca.nota,
+      disabled: bloqueada,
       dataset: { indice: String(indice) },
       onInput: (e) => {
         marcas.get(alumno.id).nota = e.target.value;
@@ -213,6 +247,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
         el('button', {
           type: 'button',
           clase: 'alumno__nota',
+          disabled: bloqueada,
           title: 'Agregar una observación',
           onClick: () => {
             campoObservacion.hidden = !campoObservacion.hidden;
@@ -235,9 +270,14 @@ export async function vistaNotas(contenedor, parametros = {}) {
       return;
     }
 
-    const botonGuardar = boton('Guardar notas', {
+    bloqueada = planilla.ya_registrada && !editando;
+
+    botonGuardar = boton('Guardar notas', {
       tipo: 'primario',
-      onClick: () => guardar(botonGuardar),
+      onClick: () => {
+        if (bloqueada) { editando = true; dibujarPlanilla(); return; }
+        guardar();
+      },
     });
 
     agregar(panel,
@@ -246,17 +286,16 @@ export async function vistaNotas(contenedor, parametros = {}) {
         el('p', { clase: 'clase-cabecera__fecha' }, formatearConDia(planilla.fecha))
       ),
 
-      planilla.ya_registrada
-        ? el('div', { clase: 'anuncio anuncio--info' },
-            el('strong', {}, 'Ya tiene notas cargadas. '),
-            'Al guardar se corrigen. Si borrás un número, esa nota se elimina.'
-          )
-        : null,
-
       el('div', { clase: 'acciones-rapidas' }, resumen),
 
-      el('p', { clase: 'campo__ayuda' },
-        'Escribí la nota (1 a 10) y presioná Enter para pasar al siguiente alumno.'),
+      /*
+       * La ayuda es para quien esta escribiendo, asi que aparece con la
+       * planilla abierta. Ahi va tambien lo unico que el boton no puede
+       * decir: que borrar el numero borra la nota.
+       */
+      bloqueada ? null : el('p', { clase: 'campo__ayuda' },
+        'Escribí la nota (1 a 10) y presioná Enter para pasar al siguiente alumno. ' +
+        'Si borrás un número, esa nota se elimina.'),
 
       el('div', { clase: 'lista-alumnos' }, ...planilla.alumnos.map(filaAlumno)),
 
@@ -266,12 +305,13 @@ export async function vistaNotas(contenedor, parametros = {}) {
     actualizarResumen();
 
     // Foco en el primer campo: se puede empezar a escribir de inmediato.
-    setTimeout(() => panel.querySelector('.nota-campo')?.focus(), 60);
+    // Con la planilla cerrada no hay nada donde escribir.
+    if (!bloqueada) setTimeout(() => panel.querySelector('.nota-campo')?.focus(), 60);
   }
 
   /* --- Guardado ----------------------------------------------------------- */
 
-  async function guardar(botonGuardar) {
+  async function guardar() {
     const invalidas = [...marcas.values()].filter(
       (m) => m.nota !== '' && !notaValida(Number(m.nota))
     );
@@ -305,8 +345,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
       await cargar();
     } catch (error) {
       aviso(error.message, 'error');
-      botonGuardar.disabled = false;
-      botonGuardar.textContent = 'Guardar notas';
+      actualizarBotonGuardar();
     }
   }
 

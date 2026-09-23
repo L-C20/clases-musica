@@ -70,6 +70,7 @@
 /* Safari en iPhone agrisa por su cuenta el texto de un campo apagado, al punto
    de no poder leerlo. -webkit-text-fill-color es la unica forma de frenarlo. */
 .alumno__observacion:disabled,
+.nota-campo:disabled,
 .campo--completo .control:disabled {
   opacity: 1;
   background: var(--fondo);
