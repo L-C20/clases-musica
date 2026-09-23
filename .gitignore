@@ -1,0 +1,18 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno -- NUNCA subir el .env real
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
+
+# Editores
+.vscode/
+.idea/

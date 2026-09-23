@@ -1,0 +1,409 @@
+/**
+ * frontend/css/componentes.css
+ * -----------------------------------------------------------------------------
+ * Piezas reutilizables: botones, tablas, formularios, pastillas, modales
+ * y avisos.
+ */
+
+/* --- Botones --------------------------------------------------------------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 15px;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: var(--radio-chico);
+  border: 1px solid var(--borde-fuerte);
+  background: var(--panel);
+  color: var(--texto);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.boton:hover { background: var(--fondo); }
+.boton:disabled { opacity: .6; cursor: default; }
+
+.boton--primario {
+  background: var(--principal);
+  border-color: var(--principal);
+  color: #fff;
+}
+.boton--primario:hover { background: var(--principal-oscuro); }
+
+.boton--peligro { color: var(--peligro); border-color: #f0c4c0; }
+.boton--peligro:hover { background: var(--peligro-suave); }
+
+.boton--chico { padding: 6px 10px; font-size: .84rem; }
+
+.acciones { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* --- Controles de formulario ----------------------------------------------- */
+
+.control {
+  width: 100%;
+  padding: 9px 11px;
+  font: inherit;
+  color: var(--texto);
+  background: var(--panel);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-chico);
+}
+
+.control:focus { border-color: var(--principal); outline: none; box-shadow: 0 0 0 3px var(--principal-suave); }
+
+.control--filtro { width: auto; min-width: 190px; }
+.control--buscador { flex: 1; min-width: 220px; }
+
+textarea.control { resize: vertical; }
+
+.casilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--texto-suave);
+  font-size: .9rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.casilla input { width: 16px; height: 16px; accent-color: var(--principal); }
+
+/* --- Tarjetas -------------------------------------------------------------- */
+
+.tarjeta {
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.tarjeta__titulo {
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--texto-suave);
+  margin-bottom: 12px;
+}
+
+/* --- Tablas ---------------------------------------------------------------- */
+
+.tabla-contenedor {
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+
+.tabla th {
+  text-align: left;
+  padding: 11px 14px;
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--texto-suave);
+  background: #fafbfd;
+  border-bottom: 1px solid var(--borde);
+  white-space: nowrap;
+}
+
+.tabla td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
+}
+
+.tabla tbody tr:last-child td { border-bottom: none; }
+.tabla tbody tr:hover { background: #fafbfd; }
+
+.tabla .col-numero { text-align: right; font-variant-numeric: tabular-nums; }
+.tabla .col-acciones { width: 1%; white-space: nowrap; }
+
+.fila--inactiva { color: var(--texto-suave); background: #fcfcfd; }
+
+.conteo {
+  color: var(--texto-suave);
+  font-size: .85rem;
+  margin-bottom: 8px;
+}
+
+/* --- Pastillas de estado --------------------------------------------------- */
+
+.pastilla {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.pastilla--ok { background: var(--ok-suave); color: var(--ok); }
+.pastilla--apagado { background: #eef0f3; color: var(--texto-suave); }
+
+/* --- Mensajes -------------------------------------------------------------- */
+
+.mensaje { padding: 18px; color: var(--texto-suave); }
+.mensaje--error { color: var(--peligro); }
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 44px 20px;
+  text-align: center;
+  color: var(--texto-suave);
+  background: var(--panel);
+  border: 1px dashed var(--borde-fuerte);
+  border-radius: var(--radio);
+}
+
+.nota {
+  margin-top: 8px;
+  padding: 12px 14px;
+  font-size: .88rem;
+  color: var(--alerta);
+  background: var(--alerta-suave);
+  border-radius: var(--radio-chico);
+}
+
+/* --- Modal ----------------------------------------------------------------- */
+
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(16, 24, 40, .45);
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 22px;
+  background: var(--panel);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-alta);
+}
+
+.modal__titulo { font-size: 1.15rem; margin-bottom: 16px; }
+.modal__texto { color: var(--texto-suave); margin-bottom: 8px; }
+
+.modal__error {
+  margin-top: 14px;
+  padding: 10px 12px;
+  font-size: .88rem;
+  color: var(--peligro);
+  background: var(--peligro-suave);
+  border-radius: var(--radio-chico);
+}
+
+.modal__pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+/* --- Formulario dentro del modal ------------------------------------------- */
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.campo { display: flex; flex-direction: column; gap: 5px; }
+.campo--completo { grid-column: 1 / -1; }
+.campo--mitad { grid-column: auto; }
+
+.campo__etiqueta { font-size: .85rem; font-weight: 600; }
+.campo__obligatorio { color: var(--peligro); }
+.campo__ayuda { color: var(--texto-suave); font-size: .78rem; }
+
+/* --- Avisos flotantes ------------------------------------------------------ */
+
+.avisos {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aviso {
+  padding: 11px 16px;
+  border-radius: var(--radio-chico);
+  background: var(--texto);
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 500;
+  box-shadow: var(--sombra-alta);
+  animation: aviso-entra .18s ease-out;
+}
+
+.aviso--error { background: var(--peligro); }
+.aviso--saliendo { opacity: 0; transition: opacity .25s; }
+
+@keyframes aviso-entra {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* --- Celular: la tabla se convierte en tarjetas ---------------------------- */
+
+@media (max-width: 720px) {
+  .tabla-contenedor { background: transparent; border: none; box-shadow: none; }
+
+  .tabla thead { display: none; }
+
+  .tabla, .tabla tbody, .tabla tr, .tabla td { display: block; width: 100%; }
+
+  .tabla tr {
+    margin-bottom: 10px;
+    padding: 6px 14px;
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+  }
+
+  .tabla td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--borde);
+    text-align: right;
+  }
+
+  .tabla tr td:last-child { border-bottom: none; }
+
+  /* El titulo de la columna pasa a ser la etiqueta de cada dato. */
+  .tabla td::before {
+    content: attr(data-etiqueta);
+    font-size: .74rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--texto-suave);
+    font-weight: 600;
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  /* Las acciones quedan en su propia linea, debajo de su etiqueta. */
+  .tabla td.col-acciones {
+    /* width:1% es para la tabla de escritorio; aca hay que anularlo,
+       porque con display:flex se toma al pie de la letra y deja la
+       celda de 3 pixeles de ancho. */
+    width: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+    white-space: normal;
+    padding-top: 10px;
+  }
+
+  .tabla td.col-acciones::before { text-align: left; }
+
+  .tabla .col-acciones .acciones .boton { flex: 1; }
+
+  .form { grid-template-columns: 1fr; }
+  .campo--mitad { grid-column: 1 / -1; }
+
+  .avisos { left: 12px; right: 12px; bottom: 12px; }
+}
+
+/* --- Piezas sueltas (Fase 3) ----------------------------------------------- */
+
+/* Etiqueta + control en una sola linea, para los filtros de fecha. */
+.campo-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .85rem;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+
+.campo-inline .control { width: auto; }
+
+.accesos {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.separador {
+  height: 1px;
+  background: var(--borde);
+  margin: 16px 0;
+}
+
+.apagado { color: var(--texto-suave); }
+
+@media (max-width: 720px) {
+  .campo-inline { width: 100%; justify-content: space-between; }
+  .campo-inline .control { flex: 1; margin-left: 10px; }
+  .accesos .boton { flex: 1; }
+}
+
+/* --- Pantalla de acceso (solo cuando la app esta publicada) ---------------- */
+
+.acceso {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--fondo);
+}
+
+.acceso__caja {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-alta);
+}
+
+.acceso__marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.acceso__marca h1 { font-size: 1.2rem; }
+
+.acceso__texto { color: var(--texto-suave); font-size: .9rem; }
+
+.acceso .boton { min-height: 44px; }

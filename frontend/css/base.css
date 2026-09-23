@@ -1,0 +1,61 @@
+/**
+ * frontend/css/base.css
+ * -----------------------------------------------------------------------------
+ * Variables de diseno y reseteo. Todos los colores y medidas se definen una
+ * sola vez aca: cambiar el color principal de la aplicacion es cambiar una linea.
+ */
+
+:root {
+  /* Colores */
+  --fondo: #f5f7fa;
+  --panel: #ffffff;
+  --texto: #16202f;
+  --texto-suave: #667085;
+  --borde: #e2e7ee;
+  --borde-fuerte: #cfd6e0;
+
+  --principal: #2f5fd8;
+  --principal-oscuro: #2549a8;
+  --principal-suave: #eaf0fd;
+
+  --ok: #157347;
+  --ok-suave: #e6f4ec;
+  --peligro: #c0392f;
+  --peligro-suave: #fdecea;
+  --alerta: #a06400;
+  --alerta-suave: #fdf3e2;
+
+  /* Medidas */
+  --radio: 10px;
+  --radio-chico: 7px;
+  --sombra: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+  --sombra-alta: 0 12px 32px rgba(16, 24, 40, .18);
+  --ancho-maximo: 1180px;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--fondo);
+  -webkit-text-size-adjust: 100%;
+}
+
+body.sin-scroll { overflow: hidden; }
+
+h1, h2, h3 { margin: 0; line-height: 1.25; }
+p { margin: 0; }
+
+a { color: var(--principal); }
+
+/* Que nunca se pierda el foco del teclado. */
+:focus-visible {
+  outline: 2px solid var(--principal);
+  outline-offset: 2px;
+}

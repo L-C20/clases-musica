@@ -1,0 +1,232 @@
+/**
+ * frontend/css/layout.css
+ * -----------------------------------------------------------------------------
+ * Estructura de la pagina: barra superior, navegacion, contenedor y
+ * encabezados de pantalla.
+ */
+
+/* --- Barra superior -------------------------------------------------------- */
+
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+
+.barra__interior {
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 58px;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 700;
+  color: var(--texto);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.marca__icono {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--principal);
+  color: #fff;
+  font-size: 15px;
+}
+
+/* --- Navegacion ------------------------------------------------------------ */
+
+.nav {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.nav__enlace {
+  padding: 7px 13px;
+  border-radius: var(--radio-chico);
+  color: var(--texto-suave);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.nav__enlace:hover { background: var(--fondo); color: var(--texto); }
+
+.nav__enlace--activo {
+  background: var(--principal-suave);
+  color: var(--principal-oscuro);
+  font-weight: 600;
+}
+
+/* --- Contenido ------------------------------------------------------------- */
+
+.contenedor {
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 22px 16px 64px;
+}
+
+.encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.encabezado h1 { font-size: 1.5rem; }
+
+.encabezado__sub {
+  color: var(--texto-suave);
+  font-size: .9rem;
+  margin-top: 2px;
+}
+
+.encabezado__acciones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* --- Barra de filtros ------------------------------------------------------ */
+
+.barra-filtros {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+/* --- Metricas del inicio --------------------------------------------------- */
+
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.metrica:hover { border-color: var(--principal); }
+
+.metrica__numero {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.metrica__etiqueta {
+  color: var(--texto-suave);
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* --- Agenda del inicio ----------------------------------------------------- */
+
+.agenda { list-style: none; margin: 0; padding: 0; }
+
+.agenda__fila {
+  display: grid;
+  grid-template-columns: 96px 60px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.agenda__fila:last-child { border-bottom: none; }
+
+.agenda__dia { font-weight: 600; }
+.agenda__hora { font-variant-numeric: tabular-nums; color: var(--texto-suave); }
+.agenda__alumnos { color: var(--texto-suave); font-size: .85rem; white-space: nowrap; }
+
+/* --- Celular --------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .barra__interior {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  .nav { padding-bottom: 2px; }
+
+  .contenedor { padding: 16px 12px 56px; }
+
+  .encabezado__acciones { width: 100%; }
+  .encabezado__acciones .boton { flex: 1; }
+
+  .barra-filtros > * { width: 100%; }
+
+  .agenda__fila {
+    grid-template-columns: 1fr auto;
+    row-gap: 2px;
+  }
+  .agenda__clase { grid-column: 1 / -1; }
+}
+
+/* --- Agregados de la Fase 3 ------------------------------------------------ */
+
+/* "Asistencia" es la seccion que mas se usa: se distingue del resto. */
+.nav__enlace--destacado { color: var(--principal); font-weight: 600; }
+
+.agenda__dia { display: flex; flex-direction: column; }
+.agenda__dia small { color: var(--texto-suave); font-weight: 400; font-size: .78rem; }
+.agenda__clase small { color: var(--texto-suave); }
+
+.agenda__fila--enlace { cursor: pointer; }
+
+.agenda__fila--enlace:hover {
+  background: var(--principal-suave);
+  border-radius: var(--radio-chico);
+  box-shadow: 0 0 0 8px var(--principal-suave);
+}
+
+/* La clase de hoy se marca con una linea a la izquierda. */
+.agenda__fila--hoy {
+  box-shadow: inset 3px 0 0 var(--principal);
+  padding-left: 10px;
+}
+
+@media (max-width: 720px) {
+  .agenda__fila { grid-template-columns: 1fr auto; }
+  .agenda__hora { text-align: right; }
+}

@@ -1,0 +1,310 @@
+/**
+ * frontend/css/asistencia.css
+ * -----------------------------------------------------------------------------
+ * Estilos de la planilla de asistencia y del historial.
+ *
+ * Prioridad de esta pantalla: que se pueda marcar rapido con el dedo.
+ * Los botones de estado tienen al menos 44px de alto, que es el minimo
+ * recomendado para tocar sin errar en un celular.
+ */
+
+/* --- Cabecera de la clase -------------------------------------------------- */
+
+.clase-cabecera { margin-bottom: 14px; }
+.clase-cabecera h2 { font-size: 1.2rem; }
+
+.clase-cabecera__fecha {
+  color: var(--texto-suave);
+  font-size: .95rem;
+  margin-top: 2px;
+}
+
+.clase-cabecera__tema { color: var(--texto-suave); font-size: .9rem; margin-top: 4px; }
+
+/* --- Anuncio (clase ya registrada) ----------------------------------------- */
+
+.anuncio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-radius: var(--radio-chico);
+  font-size: .9rem;
+  margin-bottom: 14px;
+}
+
+.anuncio--info {
+  background: var(--alerta-suave);
+  color: #7a4c00;
+}
+
+.anuncio__extra { margin-left: auto; }
+
+/* --- Resumen y acciones rapidas -------------------------------------------- */
+
+.acciones-rapidas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.resumen {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: .87rem;
+  font-weight: 600;
+}
+
+.resumen__dato { color: var(--texto-suave); }
+.resumen__dato--presente { color: var(--ok); }
+.resumen__dato--ausente { color: var(--peligro); }
+.resumen__dato--tarde { color: var(--alerta); }
+.resumen__dato--justificado { color: var(--principal); }
+
+.resumen__pendiente {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--alerta-suave);
+  color: var(--alerta);
+  font-size: .78rem;
+}
+
+/* --- Lista de alumnos ------------------------------------------------------ */
+
+.lista-alumnos {
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.alumno { border-bottom: 1px solid var(--borde); }
+.alumno:last-child { border-bottom: none; }
+.alumno--inactivo { background: #fcfcfd; }
+
+.alumno__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+}
+
+.alumno__nombre {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alumno__estados {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+/* --- Botones de estado ----------------------------------------------------- */
+
+.estado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 46px;
+  min-height: 44px;
+  padding: 0 12px;
+  font: inherit;
+  font-weight: 700;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-chico);
+  background: var(--panel);
+  color: var(--texto-suave);
+  cursor: pointer;
+  /* Evita el retardo de 300ms al tocar en el celular. */
+  touch-action: manipulation;
+}
+
+.estado:hover { background: var(--fondo); }
+
+.estado__letra { font-size: 1rem; }
+.estado__texto { font-size: .85rem; font-weight: 600; }
+
+/* El estado elegido se pinta fuerte para que se lea de un vistazo. */
+.estado--elegido { color: #fff; }
+
+.estado--presente.estado--elegido { background: var(--ok); border-color: var(--ok); }
+.estado--ausente.estado--elegido { background: var(--peligro); border-color: var(--peligro); }
+.estado--tarde.estado--elegido { background: var(--alerta); border-color: var(--alerta); }
+.estado--justificado.estado--elegido { background: var(--principal); border-color: var(--principal); }
+
+.alumno__nota {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  font-size: 1rem;
+  line-height: 1;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-chico);
+  background: var(--panel);
+  color: var(--texto-suave);
+  cursor: pointer;
+}
+
+.alumno__nota:hover { background: var(--fondo); }
+
+.alumno__observacion {
+  margin: 0 14px 12px;
+  width: calc(100% - 28px);
+}
+
+/* --- Barra de guardado ----------------------------------------------------- */
+
+.barra-guardar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 0;
+  margin-top: 14px;
+  background: linear-gradient(to top, var(--fondo) 70%, transparent);
+}
+
+.barra-guardar .boton {
+  min-height: 48px;
+  padding: 0 28px;
+  font-size: 1rem;
+}
+
+/* --- Marcas de estado (historial) ------------------------------------------ */
+
+.marca {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.marca--presente { background: var(--ok-suave); color: var(--ok); }
+.marca--ausente { background: var(--peligro-suave); color: var(--peligro); }
+.marca--tarde { background: var(--alerta-suave); color: var(--alerta); }
+.marca--justificado { background: var(--principal-suave); color: var(--principal-oscuro); }
+.marca--pendiente { background: var(--alerta-suave); color: var(--alerta); }
+.marca--apagado { background: #eef0f3; color: var(--texto-suave); }
+
+/* --- Barra de porcentaje --------------------------------------------------- */
+
+.porcentaje {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.porcentaje__barra {
+  flex: 1;
+  height: 7px;
+  min-width: 56px;
+  border-radius: 999px;
+  background: #eef0f3;
+  overflow: hidden;
+}
+
+.porcentaje__relleno {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ok);
+}
+
+/* Menos de 75% se pinta en rojo: es el umbral para mirar al alumno. */
+.porcentaje__relleno--bajo { background: var(--peligro); }
+
+.porcentaje__numero {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: .86rem;
+}
+
+.porcentaje-total {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 16px;
+  max-width: 320px;
+}
+
+/* --- Estadisticas del alumno ----------------------------------------------- */
+
+.estadisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.estadistica {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: var(--fondo);
+  border-radius: var(--radio-chico);
+}
+
+.estadistica__numero {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.estadistica__etiqueta {
+  color: var(--texto-suave);
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.ficha-nombre { font-size: 1.25rem; font-weight: 700; }
+.ficha-sub { color: var(--texto-suave); font-size: .92rem; }
+
+/* --- Celular --------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  /* Las palabras completas no entran: queda solo la letra. */
+  .estado__texto { display: none; }
+
+  .estado { min-width: 44px; padding: 0 8px; }
+
+  .alumno__cabecera {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 11px 12px;
+  }
+
+  .alumno__nombre { flex: 1 1 100%; }
+
+  .alumno__estados { flex: 1; }
+  .alumno__estados .estado { flex: 1; }
+
+  .anuncio__extra { margin-left: 0; width: 100%; }
+
+  .barra-guardar {
+    /* Siempre visible al pie, sin tener que buscarlo. */
+    margin: 14px -12px 0;
+    padding: 12px;
+    background: var(--panel);
+    border-top: 1px solid var(--borde);
+  }
+
+  .barra-guardar .boton { width: 100%; }
+}

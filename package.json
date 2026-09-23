@@ -1,0 +1,24 @@
+{
+  "name": "aplicacion-docentes",
+  "version": "1.0.0",
+  "description": "Gestion de clases de musica: escuelas, grados, alumnos, asistencias y notas",
+  "type": "commonjs",
+  "main": "backend/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node backend/index.js",
+    "dev": "nodemon backend/index.js",
+    "db:migrar": "node db/migrar.js",
+    "db:seed": "node db/migrar.js --seed"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
