@@ -86,6 +86,19 @@ export async function vistaInicio(contenedor) {
 
   const pendientes = agenda.filter((g) => !g.cargada).length;
 
+  /*
+   * Qué se muestra en la semana.
+   *
+   * Una clase que ya pasó y quedó cargada no aporta nada: ocupa lugar arriba
+   * de lo que todavía hay que hacer. Se saca de la lista.
+   *
+   * Pero una clase que ya pasó y NO se cargó es justamente trabajo pendiente,
+   * así que se queda y se marca como atrasada. Sacarla sería esconder lo
+   * único que hay que ir a resolver.
+   */
+  const agendaVisible = agenda.filter((g) => g.fecha >= hoyTexto || !g.cargada);
+  const semanaTerminada = agenda.length > 0 && agendaVisible.length === 0;
+
   /* --- Próxima clase ------------------------------------------------------- */
 
   const proxima = proximasClases(grados, hoyTexto)[0] || null;
@@ -145,9 +158,10 @@ export async function vistaInicio(contenedor) {
    */
   function tarjetaDeClase(g) {
     const esHoy = g.fecha === hoyTexto;
+    const atrasada = g.fecha < hoyTexto && !g.cargada;
 
     return el('li', {
-      clase: `clase-item${esHoy ? ' clase-item--hoy' : ''}`,
+      clase: `clase-item${esHoy ? ' clase-item--hoy' : ''}${atrasada ? ' clase-item--atrasada' : ''}`,
       onClick: () => navegar('/asistencia', { grado: g.id, fecha: g.fecha }),
       title: `${nombreDeDia(g.dia_semana)} ${formatear(g.fecha)} · ${g.escuela_nombre} — ${g.nombre}`,
     },
@@ -160,6 +174,7 @@ export async function vistaInicio(contenedor) {
         el('div', { clase: 'clase-item__arriba' },
           el('span', { clase: 'clase-item__hora' }, String(g.hora_inicio).slice(0, 5)),
           esHoy ? el('span', { clase: 'clase-item__hoy' }, 'Hoy') : null,
+          atrasada ? el('span', { clase: 'clase-item__atrasada' }, 'Ya pasó') : null,
           el('span', {
             clase: `etiqueta-estado etiqueta-estado--${g.cargada ? 'presente' : 'pendiente'}`,
           }, g.cargada ? 'Cargada' : 'Pendiente')
@@ -246,7 +261,13 @@ export async function vistaInicio(contenedor) {
               'Con el día y la hora de cada grado, esta lista arma sola tu semana.'),
             boton('Ir a Grados', { tipo: 'primario', onClick: () => navegar('/grados') })
           )
-        : el('ul', { clase: 'agenda' }, ...agenda.map(tarjetaDeClase))
+        : semanaTerminada
+          ? el('div', { clase: 'vacio vacio--listo' },
+              el('p', {}, 'Ya cargaste todas las clases de esta semana.'),
+              el('p', { clase: 'campo__ayuda' },
+                'Lo que viene aparece arriba, en la próxima clase.')
+            )
+          : el('ul', { clase: 'agenda' }, ...agendaVisible.map(tarjetaDeClase))
     ),
 
     tarjetaRiesgo(),

@@ -203,6 +203,15 @@ textarea.control { resize: vertical; line-height: 1.5; }
   border-radius: var(--radio);
 }
 
+/* No es un vacío por falta de datos sino porque el trabajo está hecho:
+   se ve como una tarjeta normal, sin el borde punteado de "acá falta algo". */
+.vacio--listo {
+  border-style: solid;
+  border-color: var(--borde);
+  background: var(--panel);
+  padding: 30px 20px;
+}
+
 .nota {
   margin-top: 10px;
   padding: 13px 15px;

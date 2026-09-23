@@ -294,6 +294,25 @@
 .clase-item--hoy .clase-item__fecha { background: var(--degradado-marca); color: #fff; }
 .clase-item--hoy .clase-item__dia { color: rgba(255, 255, 255, .85); }
 
+/* Una clase que ya pasó y quedó sin cargar: es lo que hay que ir a resolver,
+   así que se distingue en ámbar. No se pinta de rojo a propósito: es trabajo
+   pendiente, no un error. */
+.clase-item--atrasada { border-color: #f0d9b0; background: #fffdf8; }
+.clase-item--atrasada .clase-item__fecha { background: var(--alerta-suave); color: var(--alerta); }
+.clase-item--atrasada .clase-item__dia { color: var(--alerta); }
+.clase-item--atrasada .clase-item__hora { color: var(--alerta); }
+
+.clase-item__atrasada {
+  padding: 2px 8px;
+  border-radius: var(--radio-pastilla);
+  background: var(--alerta-suave);
+  color: var(--alerta);
+  font-size: .68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
 /* Cuerpo */
 .clase-item__cuerpo {
   flex: 1;
