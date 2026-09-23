@@ -364,3 +364,108 @@
   .nota-anterior { margin-left: auto; }
   .nota-campo { width: 84px; }
 }
+
+/* --- Ficha del alumno ------------------------------------------------------- */
+
+.ficha-volver { margin-bottom: 14px; }
+
+.ficha-cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.ficha-cabecera__acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ficha-observaciones {
+  /* Respeta los saltos de linea que haya escrito el docente. */
+  white-space: pre-wrap;
+  margin-bottom: 12px;
+}
+
+.ficha-vacio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ficha-resumen {
+  margin-top: 12px;
+  color: var(--texto-suave);
+  font-size: .85rem;
+}
+
+.resumen--ficha { margin-bottom: 14px; }
+
+.nota-valor { font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+
+/* --- Indicadores grandes ---------------------------------------------------- */
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.indicador--bueno { border-left: 3px solid var(--ok); }
+.indicador--malo { border-left: 3px solid var(--peligro); }
+
+.indicador__numero {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.indicador--malo .indicador__numero { color: var(--peligro); }
+.indicador--bueno .indicador__numero { color: var(--ok); }
+
+.indicador__etiqueta {
+  color: var(--texto-suave);
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.indicador__ayuda { color: var(--texto-suave); font-size: .76rem; margin-top: 2px; }
+
+/* --- Nombre del alumno como enlace en el listado ---------------------------- */
+
+.enlace-alumno {
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--principal);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.enlace-alumno:hover { text-decoration: underline; }
+
+@media (max-width: 720px) {
+  .ficha-cabecera__acciones { width: 100%; }
+  .ficha-vacio { flex-direction: column; align-items: flex-start; }
+}

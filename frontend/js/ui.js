@@ -47,6 +47,18 @@ export function vaciar(nodo) {
 }
 
 /**
+ * Texto con el numero y la palabra en singular o plural.
+ *
+ *   plural(1, 'ausencia', 'ausencias')  -> "1 ausencia"
+ *   plural(3, 'ausencia', 'ausencias')  -> "3 ausencias"
+ *
+ * Si no se pasa el plural, se arma agregando una "s".
+ */
+export function plural(cantidad, singular, formaPlural = `${singular}s`) {
+  return `${cantidad} ${cantidad === 1 ? singular : formaPlural}`;
+}
+
+/**
  * Agrega hijos a un nodo salteando los vacios.
  *
  * Hay que usar esto en lugar de nodo.append(...) cada vez que algun hijo

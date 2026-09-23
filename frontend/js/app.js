@@ -9,6 +9,7 @@
  *   #/escuelas                        -> pantalla de escuelas
  *   #/grados?escuela=4                -> grados filtrados por escuela
  *   #/asistencia?grado=4&fecha=...    -> planilla de una clase
+ *   #/alumno?id=7                     -> ficha completa de un alumno
  *
  * Ventaja: navegar entre pantallas no recarga la pagina, asi que es
  * instantaneo incluso desde el celular.
@@ -20,6 +21,7 @@ import { vistaInicio } from './vistas/inicio.js';
 import { vistaEscuelas } from './vistas/escuelas.js';
 import { vistaGrados } from './vistas/grados.js';
 import { vistaAlumnos } from './vistas/alumnos.js';
+import { vistaAlumno } from './vistas/alumno.js';
 import { vistaAsistencia } from './vistas/asistencia.js';
 import { vistaHistorial } from './vistas/historial.js';
 import { vistaNotas } from './vistas/notas.js';
@@ -29,6 +31,7 @@ const RUTAS = {
   '/escuelas': vistaEscuelas,
   '/grados': vistaGrados,
   '/alumnos': vistaAlumnos,
+  '/alumno': vistaAlumno,
   '/asistencia': vistaAsistencia,
   '/historial': vistaHistorial,
   '/notas': vistaNotas,

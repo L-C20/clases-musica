@@ -12,6 +12,7 @@
 
 import { api } from '../api.js';
 import { estado, opcionesEscuelas, opcionesGrados } from '../estado.js';
+import { navegar } from '../app.js';
 import {
   el, vaciar, encabezado, boton, tabla, etiquetaEstado,
   cargando, vacio, aviso, formulario, confirmar,
@@ -123,7 +124,16 @@ export async function vistaAlumnos(contenedor, parametros = {}) {
     lista.append(
       el('p', { clase: 'conteo' }, `${alumnos.length} alumno${alumnos.length === 1 ? '' : 's'}`),
       tabla([
-        { titulo: 'Alumno', render: (a) => el('strong', {}, `${a.apellido}, ${a.nombre}`) },
+        {
+          titulo: 'Alumno',
+          // El nombre lleva a la ficha: es el centro de informacion del alumno.
+          render: (a) => el('button', {
+            clase: 'enlace-alumno',
+            type: 'button',
+            title: 'Ver la ficha completa',
+            onClick: () => navegar('/alumno', { id: a.id }),
+          }, `${a.apellido}, ${a.nombre}`),
+        },
         { titulo: 'Documento', render: (a) => a.documento || '—' },
         { titulo: 'Escuela', render: (a) => a.escuela_nombre },
         { titulo: 'Grado', render: (a) => a.grado_nombre },
@@ -144,50 +154,70 @@ export async function vistaAlumnos(contenedor, parametros = {}) {
     );
   }
 
-  async function campos() {
-    // Se piden los grados en cada apertura por si se creo uno recien.
-    const grados = await opcionesGrados(null);
-    return [
-      { nombre: 'apellido', etiqueta: 'Apellido', tipo: 'texto', requerido: true, ancho: 'mitad' },
-      { nombre: 'nombre', etiqueta: 'Nombre', tipo: 'texto', requerido: true, ancho: 'mitad' },
-      { nombre: 'grado_id', etiqueta: 'Escuela y grado', tipo: 'select', requerido: true,
-        numerico: true, opciones: grados },
-      { nombre: 'documento', etiqueta: 'Documento', tipo: 'texto', ancho: 'mitad',
-        ayuda: 'Opcional, pero no puede repetirse' },
-      { nombre: 'observaciones', etiqueta: 'Observaciones generales', tipo: 'textarea', filas: 3 },
-    ];
-  }
-
   async function abrirFormulario(alumno = null) {
-    formulario({
-      titulo: alumno ? `Editar ${alumno.apellido}, ${alumno.nombre}` : 'Nuevo alumno',
-      campos: await campos(),
-      valores: alumno || { grado_id: gradoFiltro || '' },
-      alGuardar: async (datos) => {
-        if (alumno) await api.alumnos.actualizar(alumno.id, datos);
-        else await api.alumnos.crear(datos);
-
-        estado.olvidar('escuelas', 'grados');
-        aviso(alumno ? 'Alumno actualizado' : 'Alumno creado');
-        await refrescar();
-      },
-    });
+    await editarAlumno(alumno, { gradoPorDefecto: gradoFiltro, alTerminar: refrescar });
   }
 
   async function cambiarEstado(alumno) {
-    if (alumno.activo) {
-      const sigue = await confirmar(
-        `¿Dar de baja a ${alumno.nombre} ${alumno.apellido}? No se borra nada: conserva su historial y podés reactivarlo cuando quieras.`,
-        { textoOk: 'Dar de baja', peligroso: true }
-      );
-      if (!sigue) return;
-    }
-
-    await api.alumnos.cambiarEstado(alumno.id, !alumno.activo);
-    estado.olvidar('escuelas', 'grados');
-    aviso(alumno.activo ? 'Alumno dado de baja' : 'Alumno reactivado');
-    await refrescar();
+    await cambiarEstadoAlumno(alumno, { alTerminar: refrescar });
   }
 
   await refrescar();
+}
+
+/* ---------------------------------------------------------------------------
+ * Funciones compartidas
+ *
+ * La ficha del alumno (vistas/alumno.js) usa exactamente el mismo formulario
+ * y la misma baja logica que este listado. Viven aca, exportadas, para que
+ * no haya dos versiones de la misma pantalla que se vayan separando con el
+ * tiempo.
+ * ------------------------------------------------------------------------ */
+
+/** Campos del formulario de alumno, con la lista de grados al dia. */
+export async function camposDeAlumno() {
+  const grados = await opcionesGrados(null);
+  return [
+    { nombre: 'apellido', etiqueta: 'Apellido', tipo: 'texto', requerido: true, ancho: 'mitad' },
+    { nombre: 'nombre', etiqueta: 'Nombre', tipo: 'texto', requerido: true, ancho: 'mitad' },
+    { nombre: 'grado_id', etiqueta: 'Escuela y grado', tipo: 'select', requerido: true,
+      numerico: true, opciones: grados },
+    { nombre: 'documento', etiqueta: 'Documento', tipo: 'texto', ancho: 'mitad',
+      ayuda: 'Opcional, pero no puede repetirse' },
+    { nombre: 'observaciones', etiqueta: 'Observaciones generales', tipo: 'textarea', filas: 3 },
+  ];
+}
+
+/** Abre el formulario para crear (alumno = null) o editar un alumno. */
+export async function editarAlumno(alumno = null, { gradoPorDefecto = '', alTerminar } = {}) {
+  formulario({
+    titulo: alumno ? `Editar ${alumno.apellido}, ${alumno.nombre}` : 'Nuevo alumno',
+    campos: await camposDeAlumno(),
+    valores: alumno || { grado_id: gradoPorDefecto || '' },
+    alGuardar: async (datos) => {
+      if (alumno) await api.alumnos.actualizar(alumno.id, datos);
+      else await api.alumnos.crear(datos);
+
+      estado.olvidar('escuelas', 'grados');
+      aviso(alumno ? 'Alumno actualizado' : 'Alumno creado');
+      await alTerminar?.();
+    },
+  });
+}
+
+/** Baja / alta logica, con confirmacion antes de dar de baja. */
+export async function cambiarEstadoAlumno(alumno, { alTerminar } = {}) {
+  if (alumno.activo) {
+    const sigue = await confirmar(
+      `¿Dar de baja a ${alumno.nombre} ${alumno.apellido}? No se borra nada: conserva su historial y podés reactivarlo cuando quieras.`,
+      { textoOk: 'Dar de baja', peligroso: true }
+    );
+    if (!sigue) return false;
+  }
+
+  await api.alumnos.cambiarEstado(alumno.id, !alumno.activo);
+  estado.olvidar('escuelas', 'grados');
+  aviso(alumno.activo ? 'Alumno dado de baja' : 'Alumno reactivado');
+  await alTerminar?.();
+  return true;
 }

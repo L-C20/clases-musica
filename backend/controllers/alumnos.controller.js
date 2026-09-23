@@ -4,8 +4,9 @@
 
 const servicio = require('../services/alumnos.service');
 const servicioGrados = require('../services/grados.service');
+const servicioFicha = require('../services/ficha.service');
 const { validarCreacion, validarEdicion } = require('../validators/alumnos.validator');
-const { validarId, idOpcional, flag } = require('../validators/comun');
+const { Campos, validarId, idOpcional, flag } = require('../validators/comun');
 const { ErrorApi } = require('../middleware/errores');
 
 async function listar(req, res) {
@@ -27,6 +28,27 @@ async function obtener(req, res) {
   const alumno = await servicio.obtenerPorId(id);
   if (!alumno) throw new ErrorApi(404, 'El alumno no existe');
   res.json({ ok: true, datos: alumno });
+}
+
+/**
+ * Ficha completa del alumno: datos, asistencia, notas y estadisticas.
+ * Una sola llamada resuelve toda la pantalla.
+ */
+async function obtenerFicha(req, res) {
+  const id = validarId(req.params.id, 'id de alumno');
+
+  const { desde, hasta } = new Campos(req.query)
+    .fecha('desde', { etiqueta: 'fecha desde' })
+    .fecha('hasta', { etiqueta: 'fecha hasta' })
+    .fin();
+
+  const ficha = await servicioFicha.obtener(id, {
+    desde: desde ?? null,
+    hasta: hasta ?? null,
+  });
+  if (!ficha) throw new ErrorApi(404, 'El alumno no existe');
+
+  res.json({ ok: true, datos: ficha });
 }
 
 async function crear(req, res) {
@@ -64,4 +86,4 @@ async function cambiarEstado(req, res) {
   res.json({ ok: true, datos: alumno });
 }
 
-module.exports = { listar, obtener, crear, actualizar, cambiarEstado };
+module.exports = { listar, obtener, obtenerFicha, crear, actualizar, cambiarEstado };

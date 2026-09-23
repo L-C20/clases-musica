@@ -4,8 +4,8 @@
  * Consulta de clases ya dictadas, con filtros por escuela, grado y rango de
  * fechas, y el detalle alumno por alumno de cada clase.
  *
- * Tambien permite ver el historial individual de un alumno con sus
- * estadisticas: #/historial?alumno=7
+ * El historial individual de cada alumno esta en su ficha (#/alumno?id=7),
+ * a la que se llega desde el detalle de cualquier clase.
  */
 
 import { api } from '../api.js';
@@ -55,9 +55,15 @@ function barraPorcentaje(porcentaje) {
 export async function vistaHistorial(contenedor, parametros = {}) {
   const mesActual = rangoDelMes(hoy());
 
+  // El historial individual del alumno ahora vive en su ficha (Fase 6).
+  // Los enlaces viejos con ?alumno=ID se redirigen alli.
+  if (parametros.alumno) {
+    navegar('/alumno', { id: parametros.alumno });
+    return;
+  }
+
   let escuelaSel = parametros.escuela || '';
   let gradoSel = parametros.grado || '';
-  let alumnoSel = parametros.alumno || '';
   let desde = parametros.desde || mesActual.desde;
   let hasta = parametros.hasta || mesActual.hasta;
 
@@ -109,73 +115,11 @@ export async function vistaHistorial(contenedor, parametros = {}) {
       selectorEscuela,
       selectorGrado,
       el('label', { clase: 'campo-inline' }, 'Desde', campoDesde),
-      el('label', { clase: 'campo-inline' }, 'Hasta', campoHasta),
-      alumnoSel
-        ? boton('Ver todas las clases', { chico: true, onClick: () => { alumnoSel = ''; refrescar(); } })
-        : null
+      el('label', { clase: 'campo-inline' }, 'Hasta', campoHasta)
     ),
     panel
   );
 
-  /* --- Historial de un alumno -------------------------------------------- */
-
-  async function dibujarAlumno() {
-    const [alumno, historial] = await Promise.all([
-      api.alumnos.obtener(alumnoSel),
-      api.get(`/alumnos/${alumnoSel}/asistencias?desde=${desde}&hasta=${hasta}`),
-    ]);
-
-    const est = historial.estadisticas;
-
-    vaciar(panel);
-    panel.append(
-      el('div', { clase: 'acciones' },
-        boton('Volver al listado de clases', {
-          onClick: () => { alumnoSel = ''; refrescar(); },
-        })
-      ),
-      el('div', { clase: 'separador' }),
-      el('section', { clase: 'tarjeta' },
-        el('h2', { clase: 'tarjeta__titulo' }, 'Alumno'),
-        el('p', { clase: 'ficha-nombre' }, `${alumno.apellido}, ${alumno.nombre}`),
-        el('p', { clase: 'ficha-sub' }, `${alumno.escuela_nombre} — ${alumno.grado_nombre}`),
-
-        el('div', { clase: 'estadisticas' },
-          el('div', { clase: 'estadistica' },
-            el('span', { clase: 'estadistica__numero' }, String(est.total)),
-            el('span', { clase: 'estadistica__etiqueta' }, 'Clases')),
-          el('div', { clase: 'estadistica' },
-            el('span', { clase: 'estadistica__numero' }, String(est.presentes)),
-            el('span', { clase: 'estadistica__etiqueta' }, 'Presentes')),
-          el('div', { clase: 'estadistica' },
-            el('span', { clase: 'estadistica__numero' }, String(est.ausentes)),
-            el('span', { clase: 'estadistica__etiqueta' }, 'Ausentes')),
-          el('div', { clase: 'estadistica' },
-            el('span', { clase: 'estadistica__numero' }, String(est.tardes)),
-            el('span', { clase: 'estadistica__etiqueta' }, 'Tardanzas')),
-          el('div', { clase: 'estadistica' },
-            el('span', { clase: 'estadistica__numero' }, String(est.justificados)),
-            el('span', { clase: 'estadistica__etiqueta' }, 'Justificados'))
-        ),
-
-        el('div', { clase: 'porcentaje-total' },
-          el('span', { clase: 'campo__etiqueta' }, 'Asistencia'),
-          barraPorcentaje(est.porcentaje)
-        )
-      ),
-
-      historial.clases.length === 0
-        ? vacio('Este alumno no tiene asistencias registradas en este período.')
-        : tabla([
-            { titulo: 'Fecha', render: (c) => formatearConDia(c.fecha) },
-            { titulo: 'Grado', render: (c) => `${c.escuela_nombre} — ${c.grado_nombre}` },
-            { titulo: 'Estado', render: (c) => pastillaEstado(c.estado) },
-            { titulo: 'Observación', render: (c) => c.observacion || '—' },
-          ], historial.clases)
-    );
-  }
-
-  /* --- Listado de clases -------------------------------------------------- */
 
   async function dibujarClases() {
     const clases = await api.get(
@@ -238,11 +182,12 @@ export async function vistaHistorial(contenedor, parametros = {}) {
         { titulo: 'Estado', render: (a) => pastillaEstado(a.estado) },
         { titulo: 'Observación', render: (a) => a.observacion || '—' },
         {
-          titulo: 'Historial',
+          titulo: 'Ficha',
           clase: 'col-acciones',
           render: (a) => boton('Ver alumno', {
             chico: true,
-            onClick: () => { alumnoSel = a.alumno_id; refrescar(); },
+            titulo: 'Abrir la ficha completa del alumno',
+            onClick: () => navegar('/alumno', { id: a.alumno_id }),
           }),
         },
       ], clase.asistencias)
@@ -254,8 +199,7 @@ export async function vistaHistorial(contenedor, parametros = {}) {
     panel.append(cargando());
 
     try {
-      if (alumnoSel) await dibujarAlumno();
-      else await dibujarClases();
+      await dibujarClases();
     } catch (error) {
       vaciar(panel);
       panel.append(el('p', { clase: 'mensaje mensaje--error' }, error.message));
