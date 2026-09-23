@@ -127,6 +127,33 @@ a { color: var(--marca); }
   * { scrollbar-width: thin; scrollbar-color: var(--borde-fuerte) transparent; }
 }
 
+/* ---------------------------------------------------------------------------
+ * Escala para celular
+ *
+ * En una pantalla de 375px, las mismas medidas que en el monitor se ven
+ * enormes: cada tarjeta ocupa media pantalla y hay que hacer scroll para todo.
+ *
+ * En vez de corregir tamaño por tamaño, se bajan acá los valores base
+ * (tipografía y radios) y el resto de la aplicación se achica con ellos,
+ * porque todo está escrito en rem y en variables.
+ *
+ * LO QUE NO SE ACHICA: las zonas para tocar con el dedo. Los botones de
+ * asistencia y el campo de nota se quedan en 44px de alto, que es el mínimo
+ * recomendado para no errarle. Se achica el texto y el aire, nunca el blanco
+ * donde uno apunta.
+ * ------------------------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  :root {
+    --radio-xl: 15px;
+    --radio: 12px;
+    --radio-chico: 9px;
+    --alto-barra-inferior: 56px;
+  }
+
+  body { font-size: 14px; line-height: 1.5; }
+}
+
 /* Respeta a quien pidió menos movimiento en su sistema. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

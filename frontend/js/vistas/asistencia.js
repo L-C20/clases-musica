@@ -107,7 +107,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
   vaciar(contenedor);
   contenedor.append(
     encabezado('Asistencia', 'Elegí grado y fecha, marcá y guardá'),
-    el('div', { clase: 'barra-filtros' }, selectorEscuela, selectorGrado, campoFecha),
+    el('div', { clase: 'barra-filtros barra-filtros--compacta' }, selectorEscuela, selectorGrado, campoFecha),
     panel
   );
 
@@ -255,8 +255,8 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
 
       planilla.ya_registrada
         ? el('div', { clase: 'anuncio anuncio--info' },
-            el('strong', {}, 'Esta clase ya tiene asistencia registrada. '),
-            'Podés modificarla: al guardar se corrige la existente, no se duplica.',
+            el('strong', {}, 'Ya tiene asistencia cargada. '),
+            'Al guardar se corrige, no se duplica.',
             el('span', { clase: 'anuncio__extra' },
               boton('Borrar esta clase', {
                 chico: true, tipo: 'peligro',

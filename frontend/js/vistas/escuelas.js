@@ -61,9 +61,11 @@ export async function vistaEscuelas(contenedor) {
     }
 
     lista.append(tabla([
-      { titulo: 'Código', render: (e) => e.codigo || '—' },
+      // El nombre va primero: en celular la primera columna es el titulo
+      // de la tarjeta, y "1733" no dice nada sin el nombre al lado.
       { titulo: 'Escuela', render: (e) => el('strong', {}, e.nombre) },
-      { titulo: 'Descripción', render: (e) => e.descripcion || '—' },
+      { titulo: 'Código', render: (e) => e.codigo || '—' },
+      { titulo: 'Descripción', oculta: true, render: (e) => e.descripcion || '—' },
       { titulo: 'Grados', clase: 'col-numero', render: (e) => String(e.total_grados) },
       { titulo: 'Alumnos', clase: 'col-numero', render: (e) => String(e.total_alumnos) },
       { titulo: 'Estado', render: (e) => etiquetaEstado(e.activo) },

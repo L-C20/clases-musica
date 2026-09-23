@@ -352,6 +352,48 @@ textarea.control { resize: vertical; line-height: 1.5; }
 /* --- Celular: la tabla se convierte en tarjetas ---------------------------- */
 
 @media (max-width: 720px) {
+  /* --- Escala general en celular ------------------------------------------ */
+
+  .boton { padding: 9px 13px; font-size: .84rem; gap: 6px; }
+  .boton--chico { padding: 6px 10px; font-size: .78rem; }
+
+  .control { padding: 9px 11px; font-size: .88rem; }
+
+  /* Tres selectores apilados ocupaban 200px antes de ver un alumno. En la
+     barra compacta el primero va entero y los otros dos comparten renglon. */
+  .barra-filtros--compacta > *:first-child { width: 100%; }
+  .barra-filtros--compacta > *:not(:first-child) { width: calc(50% - 4px); }
+  /* Sin esto el min-width de los filtros los obliga a caer en renglones
+     separados y no se gana nada. */
+  .barra-filtros--compacta .control { min-width: 0; }
+
+  /* Un boton de filtro no necesita todo el ancho: comparte renglon con los
+     demas en vez de apilarse uno abajo del otro. */
+  .barra-filtros .boton { width: auto; flex: 1 1 auto; }
+
+  .tarjeta { padding: 14px; margin-bottom: 12px; }
+  .tarjeta__titulo { font-size: .69rem; margin-bottom: 10px; letter-spacing: .05em; }
+
+  .pastilla { padding: 3px 9px; font-size: .68rem; }
+
+  .vacio { padding: 32px 18px; gap: 11px; }
+  .nota { padding: 11px 12px; font-size: .83rem; }
+  .conteo { font-size: .8rem; margin-bottom: 8px; }
+  .separador { margin: 14px 0; }
+  .campo__etiqueta { font-size: .8rem; }
+  .campo__ayuda { font-size: .75rem; }
+
+  .modal { padding: 18px; border-radius: var(--radio); }
+  .modal__titulo { font-size: 1.05rem; margin-bottom: 14px; }
+  .modal__pie { margin-top: 16px; }
+  .form { gap: 12px; }
+
+  .aviso { padding: 11px 15px; font-size: .85rem; }
+
+  .acceso__caja { padding: 24px; gap: 13px; }
+
+  /* --- La tabla se convierte en tarjetas ---------------------------------- */
+
   .tabla-contenedor { background: transparent; border: none; box-shadow: none; }
 
   .tabla thead { display: none; }
@@ -359,8 +401,8 @@ textarea.control { resize: vertical; line-height: 1.5; }
   .tabla, .tabla tbody, .tabla tr, .tabla td { display: block; width: 100%; }
 
   .tabla tr {
-    margin-bottom: 12px;
-    padding: 8px 16px;
+    margin-bottom: 9px;
+    padding: 4px 13px;
     background: var(--panel);
     border: 1px solid var(--borde);
     border-radius: var(--radio);
@@ -373,18 +415,32 @@ textarea.control { resize: vertical; line-height: 1.5; }
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    padding: 9px 0;
+    gap: 12px;
+    padding: 7px 0;
+    font-size: .92rem;
     border-bottom: 1px solid var(--borde);
     text-align: right;
   }
 
   .tabla tr td:last-child { border-bottom: none; }
 
+  /* La primera columna es el titulo de la tarjeta: sin rotulo y destacada. */
+  .tabla td.col-titulo {
+    justify-content: flex-start;
+    text-align: left;
+    padding: 9px 0 8px;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .tabla td.col-titulo::before { content: none; }
+
+  /* Datos de consulta: se ven en la computadora, no en el telefono. */
+  .tabla .col-oculta-celular { display: none; }
+
   /* El título de la columna pasa a ser la etiqueta de cada dato. */
   .tabla td::before {
     content: attr(data-etiqueta);
-    font-size: .72rem;
+    font-size: .67rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: .06em;
@@ -394,17 +450,19 @@ textarea.control { resize: vertical; line-height: 1.5; }
   }
 
   /* width:1% es para la tabla de escritorio; acá hay que anularlo, porque con
-     display:flex se toma al pie de la letra y deja la celda de 3px de ancho. */
+     display:flex se toma al pie de la letra y deja la celda de 3px de ancho.
+
+     El rótulo "ACCIONES" tampoco aporta nada arriba de dos botones que ya
+     dicen qué hacen, así que se saca: son 28px menos por tarjeta. */
   .tabla td.col-acciones {
     width: auto;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
+    gap: 7px;
     white-space: normal;
-    padding-top: 11px;
+    padding-top: 9px;
   }
 
-  .tabla td.col-acciones::before { text-align: left; }
+  .tabla td.col-acciones::before { content: none; }
+  .tabla .col-acciones .acciones { width: 100%; }
   .tabla .col-acciones .acciones .boton { flex: 1; }
 
   .form { grid-template-columns: 1fr; }
@@ -422,5 +480,4 @@ textarea.control { resize: vertical; line-height: 1.5; }
     bottom: calc(12px + var(--alto-barra-inferior));
   }
 
-  .modal { padding: 22px; }
 }

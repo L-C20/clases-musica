@@ -134,7 +134,7 @@ export async function vistaAlumnos(contenedor, parametros = {}) {
             onClick: () => navegar('/alumno', { id: a.id }),
           }, `${a.apellido}, ${a.nombre}`),
         },
-        { titulo: 'Documento', render: (a) => a.documento || '—' },
+        { titulo: 'Documento', oculta: true, render: (a) => a.documento || '—' },
         { titulo: 'Escuela', render: (a) => a.escuela_nombre },
         { titulo: 'Grado', render: (a) => a.grado_nombre },
         { titulo: 'Estado', render: (a) => etiquetaEstado(a.activo) },

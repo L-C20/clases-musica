@@ -239,7 +239,7 @@ export async function vistaReportes(contenedor, parametros = {}) {
 
       tabla([
         { titulo: 'Escuela', render: (e) => el('strong', {}, e.nombre) },
-        { titulo: 'Código', render: (e) => e.codigo || '—' },
+        { titulo: 'Código', oculta: true, render: (e) => e.codigo || '—' },
         { titulo: 'Grados', clase: 'col-numero', render: (e) => String(e.grados) },
         { titulo: 'Alumnos', clase: 'col-numero', render: (e) => String(e.alumnos) },
         { titulo: 'Clases', clase: 'col-numero', render: (e) => String(e.clases) },

@@ -116,18 +116,35 @@ export function vacio(mensaje, accion = null) {
 /**
  * Tabla generica.
  *
- * columnas: [{ titulo, render(fila), clase? }]
- * Cada celda lleva data-etiqueta con el titulo de su columna: el CSS lo usa
- * para convertir la tabla en tarjetas apiladas cuando la pantalla es chica.
+ * columnas: [{ titulo, render(fila), clase?, oculta? }]
+ *
+ * En pantalla chica la tabla se convierte en tarjetas apiladas, y ahi cada
+ * celda necesita decir de que columna es. Por eso todas llevan data-etiqueta:
+ * el CSS lo muestra como rotulo.
+ *
+ * Dos detalles que hacen que las tarjetas no queden interminables:
+ *
+ *  - La PRIMERA columna es el titulo de la tarjeta. No lleva rotulo (seria
+ *    repetir "ALUMNO" arriba de cada nombre) y va destacada.
+ *  - Una columna con oculta:true no se muestra en celular. Sirve para los
+ *    datos de consulta, que en el telefono solo agregan scroll; en la
+ *    computadora se siguen viendo.
  */
 export function tabla(columnas, filas) {
+  const claseDeColumna = (c, indice) => [
+    c.clase,
+    indice === 0 ? 'col-titulo' : null,
+    c.oculta ? 'col-oculta-celular' : null,
+  ].filter(Boolean).join(' ') || null;
+
   return el('div', { clase: 'tabla-contenedor' },
     el('table', { clase: 'tabla' },
-      el('thead', {}, el('tr', {}, ...columnas.map((c) => el('th', { clase: c.clase }, c.titulo)))),
+      el('thead', {}, el('tr', {},
+        ...columnas.map((c, i) => el('th', { clase: claseDeColumna(c, i) }, c.titulo)))),
       el('tbody', {}, ...filas.map((fila) =>
         el('tr', { clase: fila.activo === false ? 'fila--inactiva' : null },
-          ...columnas.map((c) =>
-            el('td', { clase: c.clase, dataset: { etiqueta: c.titulo } }, c.render(fila))
+          ...columnas.map((c, i) =>
+            el('td', { clase: claseDeColumna(c, i), dataset: { etiqueta: c.titulo } }, c.render(fila))
           )
         )
       ))

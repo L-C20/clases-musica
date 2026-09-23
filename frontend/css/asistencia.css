@@ -214,13 +214,32 @@
   /* Las palabras completas no entran: queda solo la letra. */
   .estado__texto { display: none; }
 
-  .estado { min-width: 44px; padding: 0 8px; }
+  /* El alto de 44px NO se toca: es la zona donde apunta el dedo. Lo que se
+     achica es el ancho y el aire alrededor. */
+  .estado { min-width: 42px; padding: 0 6px; }
+  .estado__letra { font-size: .94rem; }
+
+  .clase-cabecera { margin-bottom: 11px; }
+  .clase-cabecera h2 { font-size: 1.05rem; }
+  .clase-cabecera__fecha { font-size: .85rem; }
+
+  .anuncio { padding: 11px 12px; font-size: .84rem; margin-bottom: 11px; }
+  .acciones-rapidas { margin-bottom: 8px; }
+  .resumen { gap: 10px; font-size: .8rem; }
+  .resumen__pendiente { font-size: .72rem; }
+
+  .lista-alumnos { margin-bottom: 12px; }
 
   .alumno__cabecera {
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 11px 12px;
+    gap: 5px;
+    padding: 7px 10px;
   }
+
+  .alumno__observacion { margin: 0 10px 9px; width: calc(100% - 20px); }
+  .alumno__nota { width: 36px; height: 36px; }
+
+  .alumno__nombre { font-size: .95rem; }
 
   .alumno__nombre { flex: 1 1 100%; }
 
@@ -231,11 +250,14 @@
 
   .barra-guardar {
     /* Siempre visible al pie, sin tener que buscarlo. */
-    margin: 14px -12px 0;
-    padding: 12px;
+    margin: 12px -12px 0;
+    padding: 10px 12px;
     background: var(--panel);
     border-top: 1px solid var(--borde);
   }
+
+  /* El boton de guardar tampoco se achica: es el mas importante de la app. */
+  .barra-guardar .boton { min-height: 46px; font-size: .95rem; }
 
   .barra-guardar .boton { width: 100%; }
 }
@@ -397,6 +419,16 @@
 .enlace-alumno:hover { text-decoration: underline; }
 
 @media (max-width: 720px) {
+  .ficha-volver { margin-bottom: 10px; }
+  .ficha-cabecera { margin-bottom: 14px; gap: 10px; }
   .ficha-cabecera__acciones { width: 100%; }
-  .ficha-vacio { flex-direction: column; align-items: flex-start; }
+  .ficha-nombre { font-size: 1.22rem; }
+  .ficha-sub { font-size: .85rem; }
+  .ficha-vacio { flex-direction: column; align-items: flex-start; gap: 9px; }
+
+  .indicadores { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+  .indicador { padding: 12px 13px; }
+  .indicador__numero { font-size: 1.4rem; }
+  .indicador__etiqueta { font-size: .66rem; }
+  .indicador__ayuda { font-size: .71rem; }
 }

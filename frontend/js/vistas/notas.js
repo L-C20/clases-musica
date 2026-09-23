@@ -86,7 +86,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
   vaciar(contenedor);
   contenedor.append(
     encabezado('Notas', 'Cargá la nota de todo el grado de una vez'),
-    el('div', { clase: 'barra-filtros' }, selectorEscuela, selectorGrado, campoFecha),
+    el('div', { clase: 'barra-filtros barra-filtros--compacta' }, selectorEscuela, selectorGrado, campoFecha),
     panel
   );
 
@@ -240,8 +240,8 @@ export async function vistaNotas(contenedor, parametros = {}) {
 
       planilla.ya_registrada
         ? el('div', { clase: 'anuncio anuncio--info' },
-            el('strong', {}, 'Esta fecha ya tiene notas cargadas. '),
-            'Al guardar se corrigen, no se duplican. Si borrás un número, esa nota se elimina.'
+            el('strong', {}, 'Ya tiene notas cargadas. '),
+            'Al guardar se corrigen. Si borrás un número, esa nota se elimina.'
           )
         : null,
 

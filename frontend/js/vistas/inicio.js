@@ -190,7 +190,7 @@ export async function vistaInicio(contenedor) {
         'Asistencia general',
         () => navegar('/reportes')
       ),
-      tarjetaNumero(pendientes, 'Sin cargar esta semana', () => navegar('/asistencia')),
+      tarjetaNumero(pendientes, 'Sin cargar', () => navegar('/asistencia')),
       tarjetaNumero(
         totales.promedio_notas === null ? '—' : totales.promedio_notas,
         'Promedio de notas',

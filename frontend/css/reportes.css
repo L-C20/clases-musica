@@ -212,8 +212,15 @@
 /* --- Celular --------------------------------------------------------------- */
 
 @media (max-width: 720px) {
-  .pestanas { width: 100%; }
-  .pestana { flex: 1; padding: 9px 12px; text-align: center; }
+  .pestanas { width: 100%; margin-bottom: 14px; padding: 4px; }
+  .pestana { flex: 1; padding: 8px 10px; font-size: .81rem; text-align: center; }
+
+  .grafico__etiqueta { font-size: .82rem; }
+  .grafico__valor { font-size: .82rem; }
+  .grafico__pie { font-size: .75rem; margin-top: 11px; }
+  .medidor__numero { font-size: .81rem; min-width: 36px; }
+  .chip { padding: 6px 12px; font-size: .79rem; }
+  .reporte__pie { font-size: .76rem; margin-top: 14px; }
 
   .grafico__fila {
     grid-template-columns: 1fr 52px;
