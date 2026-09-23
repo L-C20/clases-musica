@@ -1,8 +1,12 @@
 /**
  * frontend/css/layout.css
  * -----------------------------------------------------------------------------
- * Estructura de la pagina: barra superior, navegacion, contenedor y
- * encabezados de pantalla.
+ * Estructura: barra superior, navegación, contenedor y encabezados.
+ *
+ * La navegación es UNA sola lista que se comporta distinto según la pantalla:
+ *   - En computadora: pastillas horizontales dentro de la barra de arriba.
+ *   - En celular: barra fija ABAJO, al alcance del pulgar, con ícono y texto.
+ * Es el mismo HTML; cambia solo el CSS.
  */
 
 /* --- Barra superior -------------------------------------------------------- */
@@ -10,26 +14,30 @@
 .barra {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: var(--panel);
+  z-index: 20;
+  background: rgba(255, 255, 255, .82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--borde);
 }
 
 .barra__interior {
   max-width: var(--ancho-maximo);
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
-  gap: 24px;
-  min-height: 58px;
+  gap: 28px;
+  min-height: 66px;
 }
 
 .marca {
   display: flex;
   align-items: center;
-  gap: 9px;
-  font-weight: 700;
+  gap: 11px;
+  font-weight: 800;
+  font-size: 1.02rem;
+  letter-spacing: -.02em;
   color: var(--texto);
   text-decoration: none;
   white-space: nowrap;
@@ -38,69 +46,81 @@
 .marca__icono {
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: var(--principal);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--degradado-marca);
+  box-shadow: var(--sombra-marca);
   color: #fff;
-  font-size: 15px;
+  font-size: 19px;
+  line-height: 1;
 }
 
-/* --- Navegacion ------------------------------------------------------------ */
+/* --- Navegación ------------------------------------------------------------ */
 
 .nav {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   overflow-x: auto;
   scrollbar-width: none;
 }
 .nav::-webkit-scrollbar { display: none; }
 
 .nav__enlace {
-  padding: 7px 13px;
-  border-radius: var(--radio-chico);
-  color: var(--texto-suave);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border-radius: var(--radio-pastilla);
+  color: var(--texto-medio);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: .91rem;
   white-space: nowrap;
+  transition: background .15s, color .15s;
 }
 
-.nav__enlace:hover { background: var(--fondo); color: var(--texto); }
+.nav__enlace .icono { opacity: .75; }
+
+.nav__enlace:hover { background: var(--panel-hundido); color: var(--texto); }
 
 .nav__enlace--activo {
-  background: var(--principal-suave);
-  color: var(--principal-oscuro);
-  font-weight: 600;
+  background: var(--marca-suave);
+  color: var(--marca-oscuro);
 }
+.nav__enlace--activo .icono { opacity: 1; }
+
+/* El texto chico de la barra inferior no se ve en computadora. */
+.nav__texto-corto { display: none; }
 
 /* --- Contenido ------------------------------------------------------------- */
 
 .contenedor {
   max-width: var(--ancho-maximo);
   margin: 0 auto;
-  padding: 22px 16px 64px;
+  padding: 26px 20px 72px;
 }
 
 .encabezado {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 18px;
   flex-wrap: wrap;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
-.encabezado h1 { font-size: 1.5rem; }
+.encabezado h1 { font-size: 1.75rem; }
 
 .encabezado__sub {
   color: var(--texto-suave);
-  font-size: .9rem;
-  margin-top: 2px;
+  font-size: .93rem;
+  margin-top: 3px;
 }
 
 .encabezado__acciones {
   display: flex;
-  gap: 8px;
+  gap: 9px;
   flex-wrap: wrap;
 }
 
@@ -111,51 +131,70 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
-  padding: 12px;
+  margin-bottom: 18px;
+  padding: 13px;
   background: var(--panel);
   border: 1px solid var(--borde);
   border-radius: var(--radio);
+  box-shadow: var(--sombra-sutil);
 }
 
-/* --- Metricas del inicio --------------------------------------------------- */
+/* --- Métricas del inicio --------------------------------------------------- */
 
 .metricas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
 .metrica {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 18px;
+  gap: 3px;
+  padding: 20px;
   text-align: left;
   background: var(--panel);
   border: 1px solid var(--borde);
   border-radius: var(--radio);
-  box-shadow: var(--sombra);
+  box-shadow: var(--sombra-sutil);
   cursor: pointer;
   font: inherit;
   color: inherit;
+  overflow: hidden;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
 }
 
-.metrica:hover { border-color: var(--principal); }
+/* Una franja de color arriba: da vida sin ensuciar el número. */
+.metrica::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--degradado-marca);
+}
+
+.metrica:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra);
+  border-color: var(--marca-borde);
+}
 
 .metrica__numero {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.1rem;
+  font-weight: 800;
   line-height: 1.1;
+  letter-spacing: -.03em;
   font-variant-numeric: tabular-nums;
 }
 
 .metrica__etiqueta {
   color: var(--texto-suave);
-  font-size: .85rem;
+  font-size: .78rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: .06em;
 }
 
 /* --- Agenda del inicio ----------------------------------------------------- */
@@ -164,69 +203,110 @@
 
 .agenda__fila {
   display: grid;
-  grid-template-columns: 96px 60px 1fr auto;
-  gap: 12px;
+  grid-template-columns: 104px 62px 1fr auto;
+  gap: 14px;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--borde);
+  padding: 13px 12px;
+  border-radius: var(--radio-chico);
+  transition: background .15s;
 }
 
-.agenda__fila:last-child { border-bottom: none; }
+.agenda__fila + .agenda__fila { border-top: 1px solid var(--borde); }
 
-.agenda__dia { font-weight: 600; }
-.agenda__hora { font-variant-numeric: tabular-nums; color: var(--texto-suave); }
-.agenda__alumnos { color: var(--texto-suave); font-size: .85rem; white-space: nowrap; }
+.agenda__dia { display: flex; flex-direction: column; font-weight: 700; }
+.agenda__dia small { color: var(--texto-suave); font-weight: 500; font-size: .78rem; }
+
+.agenda__hora {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--marca);
+}
+
+.agenda__clase small { color: var(--texto-suave); font-weight: 500; }
+
+.agenda__fila--enlace { cursor: pointer; }
+.agenda__fila--enlace:hover { background: var(--marca-suave); }
+
+/* La clase de hoy se marca con una barra de color a la izquierda. */
+.agenda__fila--hoy {
+  background: var(--panel-hundido);
+  box-shadow: inset 3px 0 0 var(--marca);
+}
 
 /* --- Celular --------------------------------------------------------------- */
 
 @media (max-width: 720px) {
-  .barra__interior {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    padding: 10px 12px;
+  /* IMPORTANTE: acá hay que apagar el backdrop-filter de la barra.
+     Un elemento con filter o backdrop-filter se convierte en el bloque
+     contenedor de sus hijos position:fixed, así que la navegación de abajo
+     quedaba pegada al pie del ENCABEZADO en vez de al pie de la pantalla.
+     El desenfoque lo sigue teniendo la barra inferior, que es la que se
+     superpone al contenido. */
+  .barra {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--panel);
   }
 
-  .nav { padding-bottom: 2px; }
+  .barra__interior {
+    padding: 10px 16px;
+    min-height: 58px;
+    gap: 12px;
+  }
 
-  .contenedor { padding: 16px 12px 56px; }
+  .marca__icono { width: 34px; height: 34px; border-radius: 10px; }
 
+  /* La navegación baja al pulgar. */
+  .nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    gap: 0;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, .95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--borde);
+    box-shadow: 0 -4px 20px -8px rgba(23, 23, 51, .18);
+  }
+
+  .nav__enlace {
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 68px;
+    padding: 7px 8px;
+    border-radius: var(--radio-chico);
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+
+  /* En la barra inferior el texto largo no entra: se usa el corto. */
+  .nav__texto { display: none; }
+  .nav__texto-corto { display: inline; }
+
+  .contenedor {
+    padding: 18px 16px calc(24px + var(--alto-barra-inferior));
+  }
+
+  .encabezado h1 { font-size: 1.45rem; }
   .encabezado__acciones { width: 100%; }
   .encabezado__acciones .boton { flex: 1; }
 
   .barra-filtros > * { width: 100%; }
 
+  .metricas { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .metrica { padding: 15px; }
+  .metrica__numero { font-size: 1.6rem; }
+
   .agenda__fila {
     grid-template-columns: 1fr auto;
-    row-gap: 2px;
+    row-gap: 3px;
+    padding: 12px 10px;
   }
   .agenda__clase { grid-column: 1 / -1; }
-}
-
-/* --- Agregados de la Fase 3 ------------------------------------------------ */
-
-/* "Asistencia" es la seccion que mas se usa: se distingue del resto. */
-.nav__enlace--destacado { color: var(--principal); font-weight: 600; }
-
-.agenda__dia { display: flex; flex-direction: column; }
-.agenda__dia small { color: var(--texto-suave); font-weight: 400; font-size: .78rem; }
-.agenda__clase small { color: var(--texto-suave); }
-
-.agenda__fila--enlace { cursor: pointer; }
-
-.agenda__fila--enlace:hover {
-  background: var(--principal-suave);
-  border-radius: var(--radio-chico);
-  box-shadow: 0 0 0 8px var(--principal-suave);
-}
-
-/* La clase de hoy se marca con una linea a la izquierda. */
-.agenda__fila--hoy {
-  box-shadow: inset 3px 0 0 var(--principal);
-  padding-left: 10px;
-}
-
-@media (max-width: 720px) {
-  .agenda__fila { grid-template-columns: 1fr auto; }
   .agenda__hora { text-align: right; }
 }

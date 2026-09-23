@@ -15,6 +15,7 @@ import {
   el, vaciar, encabezado, boton, tabla, cargando, vacio, aviso,
 } from '../ui.js';
 import { formatear, formatearConDia, rangoDelMes, hoy } from '../fechas.js';
+import { medidor } from '../graficos.js';
 
 const COLOR_ESTADO = {
   presente: 'presente',
@@ -31,25 +32,8 @@ const TEXTO_ESTADO = {
 };
 
 function pastillaEstado(valor) {
-  return el('span', { clase: `marca marca--${COLOR_ESTADO[valor] || 'apagado'}` },
+  return el('span', { clase: `etiqueta-estado etiqueta-estado--${COLOR_ESTADO[valor] || 'apagado'}` },
     TEXTO_ESTADO[valor] || valor);
-}
-
-/** Barra de porcentaje de asistencia. */
-function barraPorcentaje(porcentaje) {
-  if (porcentaje === null || porcentaje === undefined) {
-    return el('span', { clase: 'apagado' }, 'Sin datos');
-  }
-  const bajo = porcentaje < 75;
-  return el('div', { clase: 'porcentaje' },
-    el('div', { clase: 'porcentaje__barra' },
-      el('div', {
-        clase: `porcentaje__relleno${bajo ? ' porcentaje__relleno--bajo' : ''}`,
-        style: `width: ${Math.min(porcentaje, 100)}%`,
-      })
-    ),
-    el('span', { clase: 'porcentaje__numero' }, `${porcentaje}%`)
-  );
 }
 
 export async function vistaHistorial(contenedor, parametros = {}) {
@@ -142,7 +126,7 @@ export async function vistaHistorial(contenedor, parametros = {}) {
         { titulo: 'Tema', render: (c) => c.tema || '—' },
         { titulo: 'Presentes', clase: 'col-numero', render: (c) => `${c.presentes}/${c.total}` },
         { titulo: 'Ausentes', clase: 'col-numero', render: (c) => String(c.ausentes) },
-        { titulo: 'Asistencia', render: (c) => barraPorcentaje(c.porcentaje) },
+        { titulo: 'Asistencia', render: (c) => medidor(c.porcentaje) },
         {
           titulo: 'Acciones',
           clase: 'col-acciones',

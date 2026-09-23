@@ -2,12 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#5b4ef0">
   <title>Gestión de Clases</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/componentes.css">
   <link rel="stylesheet" href="css/asistencia.css">
+  <link rel="stylesheet" href="css/reportes.css">
 </head>
 <body>
 
@@ -17,14 +21,34 @@
         <span class="marca__icono" aria-hidden="true">♪</span>
         <span class="marca__texto">Clases de Música</span>
       </a>
+
+      <!-- Un solo menú: pastillas arriba en computadora, barra inferior en celular.
+           data-icono le dice a app.js qué ícono ponerle a cada uno. -->
       <nav class="nav" aria-label="Secciones">
-        <a class="nav__enlace" href="#/inicio">Inicio</a>
-        <a class="nav__enlace nav__enlace--destacado" href="#/asistencia">Asistencia</a>
-        <a class="nav__enlace nav__enlace--destacado" href="#/notas">Notas</a>
-        <a class="nav__enlace" href="#/historial">Historial</a>
-        <a class="nav__enlace" href="#/escuelas">Escuelas</a>
-        <a class="nav__enlace" href="#/grados">Grados</a>
-        <a class="nav__enlace" href="#/alumnos">Alumnos</a>
+        <a class="nav__enlace" href="#/inicio" data-icono="inicio">
+          <span class="nav__texto">Inicio</span><span class="nav__texto-corto">Inicio</span>
+        </a>
+        <a class="nav__enlace" href="#/asistencia" data-icono="asistencia">
+          <span class="nav__texto">Asistencia</span><span class="nav__texto-corto">Asist.</span>
+        </a>
+        <a class="nav__enlace" href="#/notas" data-icono="notas">
+          <span class="nav__texto">Notas</span><span class="nav__texto-corto">Notas</span>
+        </a>
+        <a class="nav__enlace" href="#/reportes" data-icono="reportes">
+          <span class="nav__texto">Reportes</span><span class="nav__texto-corto">Report.</span>
+        </a>
+        <a class="nav__enlace" href="#/historial" data-icono="historial">
+          <span class="nav__texto">Historial</span><span class="nav__texto-corto">Hist.</span>
+        </a>
+        <a class="nav__enlace" href="#/alumnos" data-icono="alumnos">
+          <span class="nav__texto">Alumnos</span><span class="nav__texto-corto">Alum.</span>
+        </a>
+        <a class="nav__enlace" href="#/grados" data-icono="grados">
+          <span class="nav__texto">Grados</span><span class="nav__texto-corto">Grados</span>
+        </a>
+        <a class="nav__enlace" href="#/escuelas" data-icono="escuelas">
+          <span class="nav__texto">Escuelas</span><span class="nav__texto-corto">Esc.</span>
+        </a>
       </nav>
     </div>
   </header>

@@ -19,7 +19,7 @@
 import { api } from '../api.js';
 import { opcionesEscuelas, estado as cache } from '../estado.js';
 import { navegar, ponerGuardia } from '../app.js';
-import { el, vaciar, agregar, encabezado, boton, cargando, vacio, aviso, confirmar } from '../ui.js';
+import { el, vaciar, agregar, encabezado, boton, cargando, vacio, aviso, confirmar, plural } from '../ui.js';
 import { hoy, formatearConDia, fechaDeEstaSemana } from '../fechas.js';
 
 const ESTADOS = [
@@ -154,10 +154,10 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
 
     vaciar(resumen);
     agregar(resumen,
-      el('span', { clase: 'resumen__dato resumen__dato--presente' }, `${cuenta.presente} presentes`),
-      el('span', { clase: 'resumen__dato resumen__dato--ausente' }, `${cuenta.ausente} ausentes`),
-      el('span', { clase: 'resumen__dato resumen__dato--tarde' }, `${cuenta.tarde} tarde`),
-      el('span', { clase: 'resumen__dato resumen__dato--justificado' }, `${cuenta.justificado} justificados`),
+      el('span', { clase: 'resumen__dato resumen__dato--presente' }, plural(cuenta.presente, 'presente')),
+      el('span', { clase: 'resumen__dato resumen__dato--ausente' }, plural(cuenta.ausente, 'ausente')),
+      el('span', { clase: 'resumen__dato resumen__dato--tarde' }, plural(cuenta.tarde, 'tarde')),
+      el('span', { clase: 'resumen__dato resumen__dato--justificado' }, plural(cuenta.justificado, 'justificado')),
       hayCambios ? el('span', { clase: 'resumen__pendiente' }, 'Sin guardar') : null
     );
   }

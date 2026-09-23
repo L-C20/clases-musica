@@ -61,10 +61,10 @@
 }
 
 .resumen__dato { color: var(--texto-suave); }
-.resumen__dato--presente { color: var(--ok); }
+.resumen__dato--presente { color: var(--exito); }
 .resumen__dato--ausente { color: var(--peligro); }
 .resumen__dato--tarde { color: var(--alerta); }
-.resumen__dato--justificado { color: var(--principal); }
+.resumen__dato--justificado { color: var(--marca); }
 
 .resumen__pendiente {
   padding: 2px 9px;
@@ -140,10 +140,10 @@
 /* El estado elegido se pinta fuerte para que se lea de un vistazo. */
 .estado--elegido { color: #fff; }
 
-.estado--presente.estado--elegido { background: var(--ok); border-color: var(--ok); }
-.estado--ausente.estado--elegido { background: var(--peligro); border-color: var(--peligro); }
-.estado--tarde.estado--elegido { background: var(--alerta); border-color: var(--alerta); }
-.estado--justificado.estado--elegido { background: var(--principal); border-color: var(--principal); }
+.estado--presente.estado--elegido { background: var(--estado-presente); border-color: var(--estado-presente); }
+.estado--ausente.estado--elegido { background: var(--estado-ausente); border-color: var(--estado-ausente); }
+.estado--tarde.estado--elegido { background: var(--estado-tarde); border-color: var(--estado-tarde); }
+.estado--justificado.estado--elegido { background: var(--estado-justificado); border-color: var(--estado-justificado); }
 
 .alumno__nota {
   flex-shrink: 0;
@@ -184,9 +184,12 @@
   font-size: 1rem;
 }
 
-/* --- Marcas de estado (historial) ------------------------------------------ */
+/* --- Etiquetas de estado (historial) ---------------------------------------- */
+/* OJO: no llamar a esto .marca. Ese nombre ya lo usa el logo del encabezado en
+   layout.css, y como este archivo se carga despues le pisaba el display:flex,
+   lo que partia el logo en dos lineas. */
 
-.marca {
+.etiqueta-estado {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 999px;
@@ -195,84 +198,12 @@
   white-space: nowrap;
 }
 
-.marca--presente { background: var(--ok-suave); color: var(--ok); }
-.marca--ausente { background: var(--peligro-suave); color: var(--peligro); }
-.marca--tarde { background: var(--alerta-suave); color: var(--alerta); }
-.marca--justificado { background: var(--principal-suave); color: var(--principal-oscuro); }
-.marca--pendiente { background: var(--alerta-suave); color: var(--alerta); }
-.marca--apagado { background: #eef0f3; color: var(--texto-suave); }
-
-/* --- Barra de porcentaje --------------------------------------------------- */
-
-.porcentaje {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 120px;
-}
-
-.porcentaje__barra {
-  flex: 1;
-  height: 7px;
-  min-width: 56px;
-  border-radius: 999px;
-  background: #eef0f3;
-  overflow: hidden;
-}
-
-.porcentaje__relleno {
-  height: 100%;
-  border-radius: 999px;
-  background: var(--ok);
-}
-
-/* Menos de 75% se pinta en rojo: es el umbral para mirar al alumno. */
-.porcentaje__relleno--bajo { background: var(--peligro); }
-
-.porcentaje__numero {
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  font-size: .86rem;
-}
-
-.porcentaje-total {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 16px;
-  max-width: 320px;
-}
-
-/* --- Estadisticas del alumno ----------------------------------------------- */
-
-.estadisticas {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.estadistica {
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  background: var(--fondo);
-  border-radius: var(--radio-chico);
-}
-
-.estadistica__numero {
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
-}
-
-.estadistica__etiqueta {
-  color: var(--texto-suave);
-  font-size: .76rem;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-}
+.etiqueta-estado--presente { background: var(--exito-suave); color: var(--exito); }
+.etiqueta-estado--ausente { background: var(--peligro-suave); color: var(--peligro); }
+.etiqueta-estado--tarde { background: var(--alerta-suave); color: var(--alerta); }
+.etiqueta-estado--justificado { background: var(--marca-suave); color: var(--marca-oscuro); }
+.etiqueta-estado--pendiente { background: var(--alerta-suave); color: var(--alerta); }
+.etiqueta-estado--apagado { background: #eef0f3; color: var(--texto-suave); }
 
 .ficha-nombre { font-size: 1.25rem; font-weight: 700; }
 .ficha-sub { color: var(--texto-suave); font-size: .92rem; }
@@ -328,9 +259,9 @@
 }
 
 .nota-campo:focus {
-  border-color: var(--principal);
+  border-color: var(--marca);
   outline: none;
-  box-shadow: 0 0 0 3px var(--principal-suave);
+  box-shadow: 0 0 0 3px var(--marca-suave);
 }
 
 .nota-campo--invalida {
@@ -428,7 +359,7 @@
   box-shadow: var(--sombra);
 }
 
-.indicador--bueno { border-left: 3px solid var(--ok); }
+.indicador--bueno { border-left: 3px solid var(--exito); }
 .indicador--malo { border-left: 3px solid var(--peligro); }
 
 .indicador__numero {
@@ -439,7 +370,7 @@
 }
 
 .indicador--malo .indicador__numero { color: var(--peligro); }
-.indicador--bueno .indicador__numero { color: var(--ok); }
+.indicador--bueno .indicador__numero { color: var(--exito); }
 
 .indicador__etiqueta {
   color: var(--texto-suave);
@@ -456,7 +387,7 @@
   padding: 0;
   font: inherit;
   font-weight: 700;
-  color: var(--principal);
+  color: var(--marca);
   background: none;
   border: none;
   cursor: pointer;

@@ -1,0 +1,232 @@
+/**
+ * frontend/css/reportes.css
+ * -----------------------------------------------------------------------------
+ * Gráficos, medidores, pestañas y chips.
+ *
+ * Las medidas de las barras no son arbitrarias: barra fina, punta redondeada
+ * solo del lado del dato, separación hecha con aire y no con bordes, y grilla
+ * discreta. La regla es que el dato sea lo único que llame la atención.
+ */
+
+/* --- Pestañas -------------------------------------------------------------- */
+
+.pestanas {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 5px;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-pastilla);
+  box-shadow: var(--sombra-sutil);
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pestanas::-webkit-scrollbar { display: none; }
+
+.pestana {
+  padding: 9px 20px;
+  font: inherit;
+  font-weight: 700;
+  font-size: .89rem;
+  color: var(--texto-medio);
+  background: none;
+  border: none;
+  border-radius: var(--radio-pastilla);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+
+.pestana:hover { background: var(--panel-hundido); }
+
+.pestana--activa {
+  background: var(--degradado-marca);
+  color: #fff;
+  box-shadow: var(--sombra-marca);
+}
+.pestana--activa:hover { background: var(--degradado-marca); filter: brightness(1.06); }
+
+/* --- Gráfico de barras ----------------------------------------------------- */
+
+.grafico { display: flex; flex-direction: column; }
+
+.grafico__fila {
+  display: grid;
+  grid-template-columns: minmax(96px, 210px) 1fr 58px;
+  align-items: center;
+  gap: 14px;
+  /* Este espacio es la separación entre barras vecinas: aire del color del
+     fondo, nunca un borde alrededor de la barra. */
+  padding: 5px 0;
+  border-radius: var(--radio-chico);
+}
+
+.grafico__fila:hover { background: var(--panel-hundido); }
+.grafico__fila--sin-datos { opacity: .55; }
+
+.grafico__etiqueta {
+  font-size: .87rem;
+  font-weight: 600;
+  color: var(--texto-medio);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grafico__pista {
+  position: relative;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--panel-hundido);
+  /* Grilla cada 25%: líneas de un pelo, del color del borde, bien atrás. */
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--grafico-grilla) 0 1px,
+    transparent 1px 25%
+  );
+}
+
+.grafico__barra {
+  height: 100%;
+  background: var(--grafico-barra);
+  /* Cuadrada contra el eje, redondeada en la punta del dato. */
+  border-radius: 0 4px 4px 0;
+  transition: width .35s cubic-bezier(.2, .8, .3, 1);
+}
+
+.grafico__valor {
+  font-size: .87rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--texto);
+}
+
+.grafico__vacio,
+.grafico__pie {
+  color: var(--texto-suave);
+  font-size: .8rem;
+  font-weight: 500;
+}
+
+.grafico__pie { margin-top: 14px; }
+
+/* --- Globo de ayuda (hover) ------------------------------------------------ */
+
+.globo {
+  position: fixed;
+  z-index: 70;
+  max-width: 280px;
+  padding: 9px 13px;
+  font-size: .82rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #fff;
+  background: var(--texto);
+  border-radius: var(--radio-chico);
+  box-shadow: var(--sombra-alta);
+  pointer-events: none;
+}
+
+/* --- Medidor (dentro de una tabla) ----------------------------------------- */
+
+.medidor {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 118px;
+}
+
+.medidor__pista {
+  flex: 1;
+  height: 7px;
+  min-width: 52px;
+  border-radius: var(--radio-pastilla);
+  background: var(--panel-hundido);
+  overflow: hidden;
+}
+
+.medidor__relleno {
+  height: 100%;
+  border-radius: var(--radio-pastilla);
+  background: var(--exito);
+}
+
+/* Por debajo del umbral se pinta en rojo: es la señal de "mirá este caso".
+   Nunca va solo: al lado siempre está el número. */
+.medidor__relleno--bajo { background: var(--peligro); }
+
+.medidor__numero {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  font-size: .86rem;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* --- Chips ----------------------------------------------------------------- */
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  padding: 7px 14px;
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 700;
+  border-radius: var(--radio-pastilla);
+  border: 1px solid var(--borde-fuerte);
+  background: var(--panel);
+  color: var(--texto);
+  cursor: pointer;
+  transition: transform .12s, box-shadow .15s;
+}
+
+.chip:hover { transform: translateY(-1px); box-shadow: var(--sombra-sutil); }
+
+.chip--riesgo {
+  background: var(--peligro-suave);
+  border-color: #f4cac6;
+  color: var(--peligro);
+}
+
+/* --- Tarjeta que pide atención --------------------------------------------- */
+
+.tarjeta--atencion { border-left: 3px solid var(--peligro); }
+
+/* --- Métrica no clickeable ------------------------------------------------- */
+
+.metrica--estatica { cursor: default; }
+.metrica--estatica:hover { transform: none; box-shadow: var(--sombra-sutil); border-color: var(--borde); }
+
+.reporte__pie {
+  margin-top: 18px;
+  color: var(--texto-suave);
+  font-size: .82rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* --- Celular --------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .pestanas { width: 100%; }
+  .pestana { flex: 1; padding: 9px 12px; text-align: center; }
+
+  .grafico__fila {
+    grid-template-columns: 1fr 52px;
+    row-gap: 4px;
+    padding: 9px 0;
+  }
+
+  /* En pantalla angosta la etiqueta se pone arriba y la barra ocupa el ancho. */
+  .grafico__etiqueta { grid-column: 1 / -1; white-space: normal; }
+  .grafico__pista { grid-column: 1; }
+
+  .medidor { min-width: 0; }
+
+  /* El globo de hover no aplica al tocar con el dedo. */
+  .globo { display: none; }
+}

@@ -91,7 +91,7 @@ export async function vistaInicio(contenedor) {
                   `${g.escuela_nombre} — ${g.nombre}`,
                   el('small', {}, ` · ${g.total_alumnos} ${g.total_alumnos === 1 ? 'alumno' : 'alumnos'}`)
                 ),
-                el('span', { clase: `marca marca--${g.cargada ? 'presente' : 'pendiente'}` },
+                el('span', { clase: `etiqueta-estado etiqueta-estado--${g.cargada ? 'presente' : 'pendiente'}` },
                   g.cargada ? 'Cargada' : 'Pendiente')
               )
             )

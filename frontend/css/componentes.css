@@ -1,8 +1,8 @@
 /**
  * frontend/css/componentes.css
  * -----------------------------------------------------------------------------
- * Piezas reutilizables: botones, tablas, formularios, pastillas, modales
- * y avisos.
+ * Piezas reutilizables: botones, controles, tarjetas, tablas, pastillas,
+ * modales, avisos y la pantalla de acceso.
  */
 
 /* --- Botones --------------------------------------------------------------- */
@@ -11,10 +11,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 9px 15px;
+  gap: 7px;
+  padding: 10px 17px;
   font: inherit;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: .9rem;
   line-height: 1;
   border-radius: var(--radio-chico);
   border: 1px solid var(--borde-fuerte);
@@ -22,55 +23,79 @@
   color: var(--texto);
   cursor: pointer;
   white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .1s, box-shadow .15s;
 }
 
-.boton:hover { background: var(--fondo); }
-.boton:disabled { opacity: .6; cursor: default; }
+.boton:hover { background: var(--panel-hundido); border-color: var(--texto-suave); }
+.boton:active { transform: translateY(1px); }
+.boton:disabled { opacity: .55; cursor: default; transform: none; }
 
 .boton--primario {
-  background: var(--principal);
-  border-color: var(--principal);
+  background: var(--degradado-marca);
+  border-color: transparent;
   color: #fff;
+  box-shadow: var(--sombra-marca);
 }
-.boton--primario:hover { background: var(--principal-oscuro); }
+.boton--primario:hover { filter: brightness(1.07); border-color: transparent; }
 
-.boton--peligro { color: var(--peligro); border-color: #f0c4c0; }
-.boton--peligro:hover { background: var(--peligro-suave); }
+.boton--peligro { color: var(--peligro); border-color: #f4cac6; background: var(--panel); }
+.boton--peligro:hover { background: var(--peligro-suave); border-color: var(--peligro); }
 
-.boton--chico { padding: 6px 10px; font-size: .84rem; }
+.boton--chico { padding: 7px 12px; font-size: .82rem; }
 
-.acciones { display: flex; gap: 6px; flex-wrap: wrap; }
+.acciones { display: flex; gap: 7px; flex-wrap: wrap; }
 
 /* --- Controles de formulario ----------------------------------------------- */
 
 .control {
   width: 100%;
-  padding: 9px 11px;
+  padding: 10px 13px;
   font: inherit;
+  font-size: .93rem;
   color: var(--texto);
   background: var(--panel);
   border: 1px solid var(--borde-fuerte);
   border-radius: var(--radio-chico);
+  transition: border-color .15s, box-shadow .15s;
 }
 
-.control:focus { border-color: var(--principal); outline: none; box-shadow: 0 0 0 3px var(--principal-suave); }
+.control:hover { border-color: var(--texto-suave); }
+
+.control:focus {
+  border-color: var(--marca);
+  outline: none;
+  box-shadow: 0 0 0 4px var(--marca-suave);
+}
 
 .control--filtro { width: auto; min-width: 190px; }
 .control--buscador { flex: 1; min-width: 220px; }
 
-textarea.control { resize: vertical; }
+textarea.control { resize: vertical; line-height: 1.5; }
 
 .casilla {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  color: var(--texto-suave);
+  gap: 8px;
+  color: var(--texto-medio);
   font-size: .9rem;
+  font-weight: 600;
   cursor: pointer;
   user-select: none;
 }
 
-.casilla input { width: 16px; height: 16px; accent-color: var(--principal); }
+.casilla input { width: 17px; height: 17px; accent-color: var(--marca); }
+
+.campo-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+
+.campo-inline .control { width: auto; }
 
 /* --- Tarjetas -------------------------------------------------------------- */
 
@@ -78,17 +103,21 @@ textarea.control { resize: vertical; }
   background: var(--panel);
   border: 1px solid var(--borde);
   border-radius: var(--radio);
-  box-shadow: var(--sombra);
-  padding: 18px;
+  box-shadow: var(--sombra-sutil);
+  padding: 20px;
   margin-bottom: 16px;
 }
 
 .tarjeta__titulo {
-  font-size: .82rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: .07em;
   color: var(--texto-suave);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 /* --- Tablas ---------------------------------------------------------------- */
@@ -97,7 +126,7 @@ textarea.control { resize: vertical; }
   background: var(--panel);
   border: 1px solid var(--borde);
   border-radius: var(--radio);
-  box-shadow: var(--sombra);
+  box-shadow: var(--sombra-sutil);
   overflow: hidden;
 }
 
@@ -109,61 +138,64 @@ textarea.control { resize: vertical; }
 
 .tabla th {
   text-align: left;
-  padding: 11px 14px;
-  font-size: .76rem;
+  padding: 13px 16px;
+  font-size: .72rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: .07em;
   color: var(--texto-suave);
-  background: #fafbfd;
+  background: var(--panel-hundido);
   border-bottom: 1px solid var(--borde);
   white-space: nowrap;
 }
 
 .tabla td {
-  padding: 11px 14px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--borde);
   vertical-align: middle;
 }
 
 .tabla tbody tr:last-child td { border-bottom: none; }
-.tabla tbody tr:hover { background: #fafbfd; }
+.tabla tbody tr { transition: background .12s; }
+.tabla tbody tr:hover { background: var(--panel-hundido); }
 
-.tabla .col-numero { text-align: right; font-variant-numeric: tabular-nums; }
+.tabla .col-numero { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
 .tabla .col-acciones { width: 1%; white-space: nowrap; }
 
-.fila--inactiva { color: var(--texto-suave); background: #fcfcfd; }
+.fila--inactiva { color: var(--texto-suave); background: var(--panel-hundido); }
 
 .conteo {
   color: var(--texto-suave);
-  font-size: .85rem;
-  margin-bottom: 8px;
+  font-size: .86rem;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 /* --- Pastillas de estado --------------------------------------------------- */
 
 .pastilla {
   display: inline-block;
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: .75rem;
-  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: var(--radio-pastilla);
+  font-size: .73rem;
+  font-weight: 800;
   letter-spacing: .02em;
 }
 
-.pastilla--ok { background: var(--ok-suave); color: var(--ok); }
-.pastilla--apagado { background: #eef0f3; color: var(--texto-suave); }
+.pastilla--ok { background: var(--exito-suave); color: var(--exito); }
+.pastilla--apagado { background: #eceef5; color: var(--texto-suave); }
 
 /* --- Mensajes -------------------------------------------------------------- */
 
-.mensaje { padding: 18px; color: var(--texto-suave); }
+.mensaje { padding: 20px; color: var(--texto-suave); font-weight: 600; }
 .mensaje--error { color: var(--peligro); }
 
 .vacio {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 44px 20px;
+  gap: 14px;
+  padding: 52px 24px;
   text-align: center;
   color: var(--texto-suave);
   background: var(--panel);
@@ -172,13 +204,20 @@ textarea.control { resize: vertical; }
 }
 
 .nota {
-  margin-top: 8px;
-  padding: 12px 14px;
+  margin-top: 10px;
+  padding: 13px 15px;
   font-size: .88rem;
+  font-weight: 600;
   color: var(--alerta);
   background: var(--alerta-suave);
   border-radius: var(--radio-chico);
 }
+
+.apagado { color: var(--texto-suave); }
+
+.separador { height: 1px; background: var(--borde); margin: 18px 0; }
+
+.accesos { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
 
 /* --- Modal ----------------------------------------------------------------- */
 
@@ -189,28 +228,33 @@ textarea.control { resize: vertical; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  background: rgba(16, 24, 40, .45);
+  padding: 18px;
+  background: rgba(23, 23, 51, .42);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: aparecer .15s ease-out;
 }
 
 .modal {
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 22px;
+  padding: 26px;
   background: var(--panel);
-  border-radius: var(--radio);
+  border-radius: var(--radio-xl);
   box-shadow: var(--sombra-alta);
+  animation: subir .2s cubic-bezier(.2, .8, .3, 1);
 }
 
-.modal__titulo { font-size: 1.15rem; margin-bottom: 16px; }
-.modal__texto { color: var(--texto-suave); margin-bottom: 8px; }
+.modal__titulo { font-size: 1.22rem; margin-bottom: 18px; }
+.modal__texto { color: var(--texto-medio); margin-bottom: 8px; }
 
 .modal__error {
-  margin-top: 14px;
-  padding: 10px 12px;
+  margin-top: 16px;
+  padding: 11px 14px;
   font-size: .88rem;
+  font-weight: 600;
   color: var(--peligro);
   background: var(--peligro-suave);
   border-radius: var(--radio-chico);
@@ -219,56 +263,91 @@ textarea.control { resize: vertical; }
 .modal__pie {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  margin-top: 20px;
+  gap: 9px;
+  margin-top: 22px;
 }
+
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes subir { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
 
 /* --- Formulario dentro del modal ------------------------------------------- */
 
 .form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
-.campo { display: flex; flex-direction: column; gap: 5px; }
+.campo { display: flex; flex-direction: column; gap: 6px; }
 .campo--completo { grid-column: 1 / -1; }
 .campo--mitad { grid-column: auto; }
 
-.campo__etiqueta { font-size: .85rem; font-weight: 600; }
+.campo__etiqueta { font-size: .85rem; font-weight: 700; }
 .campo__obligatorio { color: var(--peligro); }
-.campo__ayuda { color: var(--texto-suave); font-size: .78rem; }
+.campo__ayuda { color: var(--texto-suave); font-size: .79rem; font-weight: 500; }
 
 /* --- Avisos flotantes ------------------------------------------------------ */
 
 .avisos {
   position: fixed;
-  right: 16px;
-  bottom: 16px;
+  right: 20px;
+  bottom: 20px;
   z-index: 60;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 
 .aviso {
-  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 18px;
   border-radius: var(--radio-chico);
   background: var(--texto);
   color: #fff;
   font-size: .9rem;
-  font-weight: 500;
+  font-weight: 600;
   box-shadow: var(--sombra-alta);
-  animation: aviso-entra .18s ease-out;
+  animation: subir .2s cubic-bezier(.2, .8, .3, 1);
 }
 
 .aviso--error { background: var(--peligro); }
-.aviso--saliendo { opacity: 0; transition: opacity .25s; }
+.aviso--saliendo { opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s; }
 
-@keyframes aviso-entra {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
+/* --- Pantalla de acceso ---------------------------------------------------- */
+
+.acceso {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: var(--fondo);
+  background-image:
+    radial-gradient(760px 420px at 12% -10%, rgba(91, 78, 240, .18), transparent 62%),
+    radial-gradient(680px 400px at 96% 4%, rgba(196, 78, 196, .14), transparent 58%);
 }
+
+.acceso__caja {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-xl);
+  box-shadow: var(--sombra-alta);
+}
+
+.acceso__marca { display: flex; align-items: center; gap: 12px; }
+.acceso__marca h1 { font-size: 1.25rem; }
+.acceso__texto { color: var(--texto-suave); font-size: .92rem; }
+.acceso .boton { min-height: 46px; }
 
 /* --- Celular: la tabla se convierte en tarjetas ---------------------------- */
 
@@ -280,130 +359,68 @@ textarea.control { resize: vertical; }
   .tabla, .tabla tbody, .tabla tr, .tabla td { display: block; width: 100%; }
 
   .tabla tr {
-    margin-bottom: 10px;
-    padding: 6px 14px;
+    margin-bottom: 12px;
+    padding: 8px 16px;
     background: var(--panel);
     border: 1px solid var(--borde);
     border-radius: var(--radio);
-    box-shadow: var(--sombra);
+    box-shadow: var(--sombra-sutil);
   }
+
+  .tabla tbody tr:hover { background: var(--panel); }
 
   .tabla td {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    padding: 7px 0;
+    padding: 9px 0;
     border-bottom: 1px solid var(--borde);
     text-align: right;
   }
 
   .tabla tr td:last-child { border-bottom: none; }
 
-  /* El titulo de la columna pasa a ser la etiqueta de cada dato. */
+  /* El título de la columna pasa a ser la etiqueta de cada dato. */
   .tabla td::before {
     content: attr(data-etiqueta);
-    font-size: .74rem;
+    font-size: .72rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: .06em;
     color: var(--texto-suave);
-    font-weight: 600;
     text-align: left;
     flex-shrink: 0;
   }
 
-  /* Las acciones quedan en su propia linea, debajo de su etiqueta. */
+  /* width:1% es para la tabla de escritorio; acá hay que anularlo, porque con
+     display:flex se toma al pie de la letra y deja la celda de 3px de ancho. */
   .tabla td.col-acciones {
-    /* width:1% es para la tabla de escritorio; aca hay que anularlo,
-       porque con display:flex se toma al pie de la letra y deja la
-       celda de 3 pixeles de ancho. */
     width: auto;
     flex-direction: column;
     align-items: stretch;
-    gap: 7px;
+    gap: 8px;
     white-space: normal;
-    padding-top: 10px;
+    padding-top: 11px;
   }
 
   .tabla td.col-acciones::before { text-align: left; }
-
   .tabla .col-acciones .acciones .boton { flex: 1; }
 
   .form { grid-template-columns: 1fr; }
   .campo--mitad { grid-column: 1 / -1; }
 
-  .avisos { left: 12px; right: 12px; bottom: 12px; }
-}
-
-/* --- Piezas sueltas (Fase 3) ----------------------------------------------- */
-
-/* Etiqueta + control en una sola linea, para los filtros de fecha. */
-.campo-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: .85rem;
-  color: var(--texto-suave);
-  white-space: nowrap;
-}
-
-.campo-inline .control { width: auto; }
-
-.accesos {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-}
-
-.separador {
-  height: 1px;
-  background: var(--borde);
-  margin: 16px 0;
-}
-
-.apagado { color: var(--texto-suave); }
-
-@media (max-width: 720px) {
   .campo-inline { width: 100%; justify-content: space-between; }
   .campo-inline .control { flex: 1; margin-left: 10px; }
+
   .accesos .boton { flex: 1; }
+
+  /* Los avisos van sobre la barra inferior, no debajo. */
+  .avisos {
+    left: 16px;
+    right: 16px;
+    bottom: calc(12px + var(--alto-barra-inferior));
+  }
+
+  .modal { padding: 22px; }
 }
-
-/* --- Pantalla de acceso (solo cuando la app esta publicada) ---------------- */
-
-.acceso {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: var(--fondo);
-}
-
-.acceso__caja {
-  width: 100%;
-  max-width: 380px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 28px;
-  background: var(--panel);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  box-shadow: var(--sombra-alta);
-}
-
-.acceso__marca {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.acceso__marca h1 { font-size: 1.2rem; }
-
-.acceso__texto { color: var(--texto-suave); font-size: .9rem; }
-
-.acceso .boton { min-height: 44px; }

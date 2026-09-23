@@ -48,4 +48,7 @@ router.use('/clases', require('./clases.routes'));
 // --- FASE 5 -----------------------------------------------------------------
 router.use('/notas', require('./notas.routes'));
 
+// --- FASE 7 -----------------------------------------------------------------
+router.use('/reportes', require('./reportes.routes'));
+
 module.exports = router;

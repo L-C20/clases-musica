@@ -1,36 +1,88 @@
 /**
  * frontend/css/base.css
  * -----------------------------------------------------------------------------
- * Variables de diseno y reseteo. Todos los colores y medidas se definen una
- * sola vez aca: cambiar el color principal de la aplicacion es cambiar una linea.
+ * Sistema de diseño: tipografía, colores y medidas.
+ *
+ * Todo lo visual sale de las variables de este archivo. Cambiar el color
+ * principal de la aplicación es cambiar una línea.
+ *
+ * HAY DOS FAMILIAS DE COLOR Y NO SE MEZCLAN:
+ *
+ *   1. Colores de INTERFAZ (--marca, --exito, --peligro...). Decorativos y de
+ *      estado. Elegidos para que la app se vea moderna.
+ *
+ *   2. Colores de DATOS (--serie-1 a --serie-4, --grafico-*). Son los que
+ *      pintan gráficos y distinguen escuelas. Están validados: pasan los
+ *      controles de daltonismo y de contraste. NO reemplazarlos por colores
+ *      "que combinen mejor" sin volver a validarlos.
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
-  /* Colores */
-  --fondo: #f5f7fa;
+  /* --- Superficies ------------------------------------------------------- */
+  --fondo: #f4f5fb;
   --panel: #ffffff;
-  --texto: #16202f;
-  --texto-suave: #667085;
-  --borde: #e2e7ee;
-  --borde-fuerte: #cfd6e0;
+  --panel-hundido: #f8f9fc;
+  --borde: #e8e9f3;
+  --borde-fuerte: #d5d7e8;
 
-  --principal: #2f5fd8;
-  --principal-oscuro: #2549a8;
-  --principal-suave: #eaf0fd;
+  /* --- Texto ------------------------------------------------------------- */
+  --texto: #171733;
+  --texto-medio: #4a4b6b;
+  --texto-suave: #7a7c9e;
 
-  --ok: #157347;
-  --ok-suave: #e6f4ec;
-  --peligro: #c0392f;
-  --peligro-suave: #fdecea;
-  --alerta: #a06400;
-  --alerta-suave: #fdf3e2;
+  /* --- Marca ------------------------------------------------------------- */
+  --marca: #5b4ef0;
+  --marca-oscuro: #4438d4;
+  --marca-suave: #eeecfe;
+  --marca-borde: #d7d3fc;
+  --degradado-marca: linear-gradient(135deg, #5b4ef0 0%, #9d4edd 55%, #c44ec4 100%);
 
-  /* Medidas */
-  --radio: 10px;
-  --radio-chico: 7px;
-  --sombra: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
-  --sombra-alta: 0 12px 32px rgba(16, 24, 40, .18);
-  --ancho-maximo: 1180px;
+  /* --- Estados (interfaz) ------------------------------------------------ */
+  --exito: #0f9d58;
+  --exito-suave: #e3f7ed;
+  --alerta: #b45309;
+  --alerta-suave: #fdf1dd;
+  --peligro: #d92d20;
+  --peligro-suave: #fdeceb;
+  --info: #2a78d6;
+  --info-suave: #e7f0fd;
+
+  /* --- Colores de DATOS (validados: CVD y contraste) --------------------- */
+  /* Identidad de cada escuela. El orden es el que pasó la validación. */
+  --serie-1: #2a78d6;  /* azul     */
+  --serie-2: #eb6834;  /* naranja  */
+  --serie-3: #1baf7a;  /* aqua     */
+  --serie-4: #eda100;  /* amarillo */
+
+  /* Escala secuencial (un solo tono, para comparar magnitudes). */
+  --grafico-barra: #2a78d6;
+  --grafico-barra-suave: #cde2fb;
+  --grafico-grilla: #e8e9f3;
+  --grafico-eje: #c3c4d8;
+
+  /* Estados de asistencia. Nunca van solos: siempre con su texto al lado. */
+  --estado-presente: #0f9d58;
+  --estado-ausente: #d92d20;
+  --estado-tarde: #d97706;
+  --estado-justificado: #2a78d6;
+
+  /* --- Medidas ----------------------------------------------------------- */
+  --radio-xl: 20px;
+  --radio: 14px;
+  --radio-chico: 10px;
+  --radio-pastilla: 999px;
+
+  --sombra-sutil: 0 1px 2px rgba(23, 23, 51, .04), 0 1px 3px rgba(23, 23, 51, .06);
+  --sombra: 0 2px 4px rgba(23, 23, 51, .04), 0 8px 20px -6px rgba(23, 23, 51, .10);
+  --sombra-alta: 0 16px 48px -12px rgba(23, 23, 51, .30);
+  --sombra-marca: 0 6px 16px -4px rgba(91, 78, 240, .38);
+
+  --ancho-maximo: 1220px;
+
+  /* Alto de la barra inferior del celular, para dejarle aire al contenido. */
+  --alto-barra-inferior: 62px;
 }
 
 * { box-sizing: border-box; }
@@ -39,23 +91,46 @@ html, body { height: 100%; }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--texto);
   background: var(--fondo);
+  /* Dos manchas de color muy suaves: le sacan la sensación de planilla gris
+     sin molestar a la lectura. */
+  background-image:
+    radial-gradient(760px 420px at 8% -8%, rgba(91, 78, 240, .10), transparent 65%),
+    radial-gradient(680px 400px at 100% 0%, rgba(196, 78, 196, .08), transparent 60%);
+  background-attachment: fixed;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
 body.sin-scroll { overflow: hidden; }
 
-h1, h2, h3 { margin: 0; line-height: 1.25; }
+h1, h2, h3 { margin: 0; line-height: 1.2; letter-spacing: -.02em; font-weight: 800; }
 p { margin: 0; }
 
-a { color: var(--principal); }
+a { color: var(--marca); }
+
+::selection { background: var(--marca-suave); color: var(--marca-oscuro); }
 
 /* Que nunca se pierda el foco del teclado. */
 :focus-visible {
-  outline: 2px solid var(--principal);
+  outline: 2px solid var(--marca);
   outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Barras de scroll discretas en escritorio. */
+@media (min-width: 721px) {
+  * { scrollbar-width: thin; scrollbar-color: var(--borde-fuerte) transparent; }
+}
+
+/* Respeta a quien pidió menos movimiento en su sistema. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
 }

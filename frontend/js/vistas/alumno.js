@@ -31,7 +31,7 @@ const TEXTO_ESTADO = {
 };
 
 function marcaEstado(valor) {
-  return el('span', { clase: `marca marca--${valor}` }, TEXTO_ESTADO[valor] || valor);
+  return el('span', { clase: `etiqueta-estado etiqueta-estado--${valor}` }, TEXTO_ESTADO[valor] || valor);
 }
 
 /** Tarjeta grande con un numero y su etiqueta. */

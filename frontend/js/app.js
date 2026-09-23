@@ -25,6 +25,8 @@ import { vistaAlumno } from './vistas/alumno.js';
 import { vistaAsistencia } from './vistas/asistencia.js';
 import { vistaHistorial } from './vistas/historial.js';
 import { vistaNotas } from './vistas/notas.js';
+import { vistaReportes } from './vistas/reportes.js';
+import { icono } from './iconos.js';
 
 const RUTAS = {
   '/inicio': vistaInicio,
@@ -35,6 +37,7 @@ const RUTAS = {
   '/asistencia': vistaAsistencia,
   '/historial': vistaHistorial,
   '/notas': vistaNotas,
+  '/reportes': vistaReportes,
 };
 
 const RUTA_POR_DEFECTO = '/inicio';
@@ -148,7 +151,15 @@ window.addEventListener('hashchange', dibujar);
 
 // Al abrir la aplicacion: primero la sesion (si el servidor la exige),
 // y recien despues se dibuja la pantalla.
+/** Pone el icono que corresponde a cada enlace del menu. */
+function ponerIconosEnLaNavegacion() {
+  document.querySelectorAll('.nav__enlace[data-icono]').forEach((enlace) => {
+    enlace.prepend(icono(enlace.dataset.icono, { tamano: 19 }));
+  });
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
+  ponerIconosEnLaNavegacion();
   await asegurarSesion();
   sesionLista = true;
 
