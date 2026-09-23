@@ -41,6 +41,18 @@ export function nombreDeDia(numero) {
   return NOMBRES_DIA[numero] ?? '';
 }
 
+const NOMBRES_DIA_CORTOS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+/** Version de tres letras, para el bloque de fecha de la agenda. */
+export function nombreDeDiaCorto(numero) {
+  return NOMBRES_DIA_CORTOS[numero] ?? '';
+}
+
+/** El numero de dia del mes: "2026-09-21" -> "21" */
+export function diaDelMes(texto) {
+  return texto.split('-')[2];
+}
+
 /** "2026-09-23" -> "23/09/2026" */
 export function formatear(texto) {
   if (!texto) return '';

@@ -18,7 +18,9 @@ import { navegar } from '../app.js';
 import { el, vaciar, agregar, encabezado, boton, cargando, plural } from '../ui.js';
 import { icono } from '../iconos.js';
 import { medidor } from '../graficos.js';
-import { fechaDeEstaSemana, formatear, nombreDeDia, hoy, sumarDias } from '../fechas.js';
+import {
+  fechaDeEstaSemana, formatear, nombreDeDia, nombreDeDiaCorto, diaDelMes, hoy, sumarDias,
+} from '../fechas.js';
 
 /** Umbral por debajo del cual un alumno entra en la lista de atención. */
 const UMBRAL_ASISTENCIA = 75;
@@ -132,6 +134,42 @@ export async function vistaInicio(contenedor) {
     );
   }
 
+  /* --- Una clase de la semana ---------------------------------------------- */
+
+  /**
+   * Cada clase es una tarjeta propia, no una fila pegada a la siguiente.
+   *
+   * A la izquierda va un bloque con el día y el número, como en cualquier
+   * agenda: ancla la vista y da ritmo sin necesidad de líneas divisorias.
+   * La separación la hace el espacio entre tarjetas, no un filete.
+   */
+  function tarjetaDeClase(g) {
+    const esHoy = g.fecha === hoyTexto;
+
+    return el('li', {
+      clase: `clase-item${esHoy ? ' clase-item--hoy' : ''}`,
+      onClick: () => navegar('/asistencia', { grado: g.id, fecha: g.fecha }),
+      title: `${nombreDeDia(g.dia_semana)} ${formatear(g.fecha)} · ${g.escuela_nombre} — ${g.nombre}`,
+    },
+      el('div', { clase: 'clase-item__fecha' },
+        el('span', { clase: 'clase-item__dia' }, nombreDeDiaCorto(g.dia_semana)),
+        el('span', { clase: 'clase-item__numero' }, diaDelMes(g.fecha))
+      ),
+
+      el('div', { clase: 'clase-item__cuerpo' },
+        el('div', { clase: 'clase-item__arriba' },
+          el('span', { clase: 'clase-item__hora' }, String(g.hora_inicio).slice(0, 5)),
+          esHoy ? el('span', { clase: 'clase-item__hoy' }, 'Hoy') : null,
+          el('span', {
+            clase: `etiqueta-estado etiqueta-estado--${g.cargada ? 'presente' : 'pendiente'}`,
+          }, g.cargada ? 'Cargada' : 'Pendiente')
+        ),
+        el('p', { clase: 'clase-item__nombre' }, `${g.escuela_nombre} — ${g.nombre}`),
+        el('p', { clase: 'clase-item__extra' }, plural(g.total_alumnos, 'alumno'))
+      )
+    );
+  }
+
   /* --- Alumnos con asistencia baja ----------------------------------------- */
 
   const enRiesgo = reporteAlumnos
@@ -198,8 +236,8 @@ export async function vistaInicio(contenedor) {
       )
     ),
 
-    el('section', { clase: 'tarjeta' },
-      el('h2', { clase: 'tarjeta__titulo' }, 'Clases de esta semana'),
+    el('section', { clase: 'seccion' },
+      el('h2', { clase: 'seccion__titulo' }, 'Clases de esta semana'),
 
       agenda.length === 0
         ? el('div', { clase: 'vacio' },
@@ -208,26 +246,7 @@ export async function vistaInicio(contenedor) {
               'Con el día y la hora de cada grado, esta lista arma sola tu semana.'),
             boton('Ir a Grados', { tipo: 'primario', onClick: () => navegar('/grados') })
           )
-        : el('ul', { clase: 'agenda' },
-            ...agenda.map((g) =>
-              el('li', {
-                clase: `agenda__fila agenda__fila--enlace${g.fecha === hoyTexto ? ' agenda__fila--hoy' : ''}`,
-                onClick: () => navegar('/asistencia', { grado: g.id, fecha: g.fecha }),
-              },
-                el('span', { clase: 'agenda__dia' },
-                  nombreDeDia(g.dia_semana),
-                  el('small', {}, formatear(g.fecha))
-                ),
-                el('span', { clase: 'agenda__hora' }, String(g.hora_inicio).slice(0, 5)),
-                el('span', { clase: 'agenda__clase' },
-                  `${g.escuela_nombre} — ${g.nombre}`,
-                  el('small', {}, ` · ${plural(g.total_alumnos, 'alumno')}`)
-                ),
-                el('span', { clase: `etiqueta-estado etiqueta-estado--${g.cargada ? 'presente' : 'pendiente'}` },
-                  g.cargada ? 'Cargada' : 'Pendiente')
-              )
-            )
-          )
+        : el('ul', { clase: 'agenda' }, ...agenda.map(tarjetaDeClase))
     ),
 
     tarjetaRiesgo(),

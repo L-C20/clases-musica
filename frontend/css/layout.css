@@ -202,41 +202,143 @@
   letter-spacing: .06em;
 }
 
-/* --- Agenda del inicio ----------------------------------------------------- */
+/* --- Secciones con título suelto ------------------------------------------- */
 
-.agenda { list-style: none; margin: 0; padding: 0; }
+/* Para listas de tarjetas, donde meter todo dentro de otra tarjeta daría
+   el efecto de caja adentro de caja. */
+.seccion { margin-bottom: 20px; }
 
-.agenda__fila {
-  display: grid;
-  grid-template-columns: 104px 62px 1fr auto;
-  gap: 14px;
+.seccion__titulo {
+  display: flex;
   align-items: center;
-  padding: 13px 12px;
-  border-radius: var(--radio-chico);
-  transition: background .15s;
+  gap: 8px;
+  font-size: .78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--texto-suave);
+  margin-bottom: 12px;
+  padding-left: 2px;
 }
 
-.agenda__fila + .agenda__fila { border-top: 1px solid var(--borde); }
+/* --- Agenda: cada clase es una tarjeta ------------------------------------- */
 
-.agenda__dia { display: flex; flex-direction: column; font-weight: 700; }
-.agenda__dia small { color: var(--texto-suave); font-weight: 500; font-size: .78rem; }
+/*
+ * Antes esto era una lista de filas separadas por un filete, y quedaba
+ * apretado: mucha información pegada contra una línea, sin jerarquía.
+ *
+ * Ahora cada clase es su propia tarjeta con un bloque de fecha a la
+ * izquierda, como en cualquier agenda. La separación la hace el espacio
+ * entre tarjetas, no una raya; y el bloque de fecha le da a la vista un
+ * punto de apoyo para recorrer la semana de un vistazo.
+ */
 
-.agenda__hora {
+.agenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.clase-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-sutil);
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+
+.clase-item:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--sombra);
+  border-color: var(--marca-borde);
+}
+
+/* Bloque de fecha */
+.clase-item__fecha {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  padding: 9px 6px;
+  border-radius: var(--radio-chico);
+  background: var(--panel-hundido);
+  line-height: 1.1;
+}
+
+.clase-item__dia {
+  font-size: .68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--texto-suave);
+}
+
+.clase-item__numero {
+  font-size: 1.3rem;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
+}
+
+/* La clase de hoy pinta su bloque de fecha: se encuentra de una mirada. */
+.clase-item--hoy { border-color: var(--marca-borde); }
+.clase-item--hoy .clase-item__fecha { background: var(--degradado-marca); color: #fff; }
+.clase-item--hoy .clase-item__dia { color: rgba(255, 255, 255, .85); }
+
+/* Cuerpo */
+.clase-item__cuerpo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.clase-item__arriba {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.clase-item__hora {
+  font-weight: 800;
+  font-size: .95rem;
+  font-variant-numeric: tabular-nums;
   color: var(--marca);
 }
 
-.agenda__clase small { color: var(--texto-suave); font-weight: 500; }
-
-.agenda__fila--enlace { cursor: pointer; }
-.agenda__fila--enlace:hover { background: var(--marca-suave); }
-
-/* La clase de hoy se marca con una barra de color a la izquierda. */
-.agenda__fila--hoy {
-  background: var(--panel-hundido);
-  box-shadow: inset 3px 0 0 var(--marca);
+.clase-item__hoy {
+  padding: 2px 8px;
+  border-radius: var(--radio-pastilla);
+  background: var(--marca-suave);
+  color: var(--marca-oscuro);
+  font-size: .68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
 }
+
+/* La pastilla de estado se va al extremo derecho. */
+.clase-item__arriba .etiqueta-estado { margin-left: auto; }
+
+.clase-item__nombre {
+  font-weight: 700;
+  font-size: .98rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clase-item__extra { color: var(--texto-suave); font-size: .84rem; }
 
 /* --- Celular --------------------------------------------------------------- */
 
@@ -320,30 +422,18 @@
   /* La agenda pasa a dos renglones: dia + hora + estado arriba, y la clase
      completa abajo. Antes cada fila ocupaba 121px, que es una barbaridad
      para una linea de informacion. */
-  /* Tres columnas: dia, hora y estado comparten el primer renglon, y el
-     nombre de la clase se queda con el ancho completo abajo. Asi no se
-     parte en dos lineas al chocar contra la pastilla. */
-  .agenda__fila {
-    grid-template-columns: auto auto 1fr;
-    row-gap: 1px;
-    column-gap: 8px;
-    padding: 9px 8px;
-  }
+  .seccion { margin-bottom: 14px; }
+  .seccion__titulo { font-size: .69rem; margin-bottom: 9px; }
 
-  .agenda__dia {
-    grid-area: 1 / 1;
-    flex-direction: row;
-    align-items: baseline;
-    gap: 5px;
-    font-size: .92rem;
-  }
-  .agenda__dia small { font-size: .78rem; }
+  .agenda { gap: 8px; }
 
-  .agenda__hora { grid-area: 1 / 2; font-size: .92rem; }
-
-  .agenda__fila .etiqueta-estado { grid-area: 1 / 3; justify-self: end; }
-
-  .agenda__clase { grid-area: 2 / 1 / 3 / 4; font-size: .9rem; }
+  .clase-item { gap: 12px; padding: 11px 12px; }
+  .clase-item__fecha { min-width: 46px; padding: 7px 5px; }
+  .clase-item__numero { font-size: 1.15rem; }
+  .clase-item__dia { font-size: .63rem; }
+  .clase-item__hora { font-size: .9rem; }
+  .clase-item__nombre { font-size: .92rem; }
+  .clase-item__extra { font-size: .78rem; }
 }
 
 /* --- Tarjeta de la próxima clase (panel de inicio) -------------------------- */
