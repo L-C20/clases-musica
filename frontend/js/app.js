@@ -46,6 +46,15 @@ let guardia = null;
 let direccionActual = location.hash || `#${RUTA_POR_DEFECTO}`;
 let restaurando = false;
 
+/**
+ * Hasta que no se resuelva la sesion no se dibuja nada.
+ *
+ * Sin esto, al entrar a la direccion sin "#" el router arrancaba antes de
+ * pedir la contrasena: la pantalla hacia su consulta, recibia un 401 y
+ * dejaba el mensaje de error dibujado detras del formulario de acceso.
+ */
+let sesionLista = false;
+
 export function ponerGuardia(fn) {
   guardia = fn;
 }
@@ -74,6 +83,8 @@ function marcarEnlaceActivo(ruta) {
 }
 
 async function dibujar() {
+  if (!sesionLista) return;
+
   // Cuando se restaura la direccion tras cancelar una salida, no hay que
   // volver a dibujar ni volver a preguntar.
   if (restaurando) {
@@ -134,8 +145,13 @@ window.addEventListener('hashchange', dibujar);
 // y recien despues se dibuja la pantalla.
 window.addEventListener('DOMContentLoaded', async () => {
   await asegurarSesion();
-  dibujar();
-});
+  sesionLista = true;
 
-// Si se abre sin hash, mandamos al inicio para que la URL quede prolija.
-if (!location.hash) location.hash = `#${RUTA_POR_DEFECTO}`;
+  if (location.hash) {
+    dibujar();
+  } else {
+    // Si se abre sin hash, mandamos al inicio para que la URL quede prolija.
+    // El cambio de hash dispara dibujar() por si solo.
+    location.hash = `#${RUTA_POR_DEFECTO}`;
+  }
+});
