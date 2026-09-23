@@ -67,6 +67,38 @@ export function ponerGuardia(fn) {
   guardia = fn;
 }
 
+/* ---------------------------------------------------------------------------
+ * Vistas que terminan tarde
+ *
+ * Toda vista hace consultas al servidor ANTES de dibujar. Si se cambia de
+ * pantalla mientras una consulta está en curso, esa vista vieja termina
+ * después y escribe encima de la pantalla nueva: se veía el contenido de una
+ * con la dirección de la otra, y el encabezado (con su botón) desaparecía.
+ *
+ * La solución son dos candados:
+ *
+ *  1. Cada dibujado recibe su PROPIO lienzo. Cuando llega el siguiente, el
+ *     lienzo anterior se saca del documento, así que todo lo que la vista
+ *     vieja dibuje después cae en un nodo suelto que nadie ve. No hizo falta
+ *     tocar ninguna vista: siguen recibiendo "un contenedor" igual que antes.
+ *     El lienzo usa display:contents, o sea que no agrega ninguna caja ni
+ *     cambia el diseño.
+ *
+ *  2. reemplazarDireccion() solo deja cambiar la URL si la pantalla que la
+ *     pide sigue siendo la que está a la vista.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Cambia la dirección sin recargar, ignorando el pedido si viene de una
+ * pantalla que ya no está. Las vistas deben usar esto en vez de
+ * history.replaceState.
+ */
+export function reemplazarDireccion(hash) {
+  const rutaPedida = hash.replace(/^#/, '').split('?')[0];
+  if (rutaPedida !== leerDireccion().ruta) return;
+  history.replaceState(null, '', hash);
+}
+
 /** Separa "#/grados?escuela=4" en { ruta: '/grados', parametros: {escuela:'4'} } */
 function leerDireccion() {
   const bruto = location.hash.replace(/^#/, '') || RUTA_POR_DEFECTO;
@@ -116,14 +148,19 @@ async function dibujar() {
   direccionActual = location.hash || `#${RUTA_POR_DEFECTO}`;
 
   const { ruta, parametros } = leerDireccion();
-  const contenedor = document.getElementById('vista');
+  const marco = document.getElementById('vista');
   const vista = RUTAS[ruta];
 
   cerrarModales();
   marcarEnlaceActivo(ruta);
 
+  // Lienzo propio de este dibujado: si llega otro, este queda fuera del
+  // documento y lo que la vista vieja haga después no se ve.
+  vaciar(marco);
+  const contenedor = el('div', { clase: 'lienzo' });
+  marco.append(contenedor);
+
   if (!vista) {
-    vaciar(contenedor);
     contenedor.append(el('p', { clase: 'mensaje mensaje--error' }, `La pantalla "${ruta}" no existe.`));
     return;
   }

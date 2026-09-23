@@ -16,7 +16,7 @@
 
 import { api } from '../api.js';
 import { opcionesEscuelas, estado as cache } from '../estado.js';
-import { navegar, ponerGuardia } from '../app.js';
+import { navegar, ponerGuardia, reemplazarDireccion } from '../app.js';
 import { el, vaciar, agregar, encabezado, boton, cargando, vacio, aviso } from '../ui.js';
 import { hoy, formatearConDia } from '../fechas.js';
 
@@ -100,7 +100,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
   async function cargar() {
     if (!gradoSel) return mostrarSeleccion();
 
-    history.replaceState(null, '', `#/notas?grado=${gradoSel}&fecha=${fechaSel}`);
+    reemplazarDireccion(`#/notas?grado=${gradoSel}&fecha=${fechaSel}`);
 
     vaciar(panel);
     panel.append(cargando('Buscando las notas...'));

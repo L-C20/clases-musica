@@ -18,7 +18,7 @@
 
 import { api } from '../api.js';
 import { opcionesEscuelas, estado as cache } from '../estado.js';
-import { navegar, ponerGuardia } from '../app.js';
+import { navegar, ponerGuardia, reemplazarDireccion } from '../app.js';
 import { el, vaciar, agregar, encabezado, boton, cargando, vacio, aviso, confirmar, plural } from '../ui.js';
 import { hoy, formatearConDia, fechaDeEstaSemana } from '../fechas.js';
 
@@ -122,7 +122,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
     if (!gradoSel) return mostrarSeleccion();
 
     // Mantener la direccion al dia permite recargar o compartir el enlace.
-    history.replaceState(null, '', `#/asistencia?grado=${gradoSel}&fecha=${fechaSel}`);
+    reemplazarDireccion(`#/asistencia?grado=${gradoSel}&fecha=${fechaSel}`);
 
     vaciar(panel);
     panel.append(cargando('Buscando la planilla...'));

@@ -16,7 +16,7 @@
 
 import { api } from '../api.js';
 import { opcionesEscuelas, estado as cache } from '../estado.js';
-import { navegar } from '../app.js';
+import { navegar, reemplazarDireccion } from '../app.js';
 import {
   el, vaciar, agregar, encabezado, boton, tabla, cargando, vacio, aviso, plural,
 } from '../ui.js';
@@ -441,7 +441,7 @@ export async function vistaReportes(contenedor, parametros = {}) {
     selectorEscuela.hidden = pestana === 'escuelas';
     selectorGrado.hidden = pestana !== 'alumnos';
 
-    history.replaceState(null, '', `#/reportes?ver=${pestana}`);
+    reemplazarDireccion(`#/reportes?ver=${pestana}`);
 
     vaciar(panel);
     panel.append(cargando('Calculando...'));

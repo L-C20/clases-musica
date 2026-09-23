@@ -101,6 +101,11 @@
   padding: 26px 20px 72px;
 }
 
+/* Envoltorio que el router le da a cada dibujado. display:contents hace que
+   no genere ninguna caja: sus hijos se acomodan como si colgaran directo del
+   contenedor, asi que no cambia nada del diseno. */
+.lienzo { display: contents; }
+
 .encabezado {
   display: flex;
   align-items: flex-start;
@@ -309,4 +314,112 @@
   }
   .agenda__clase { grid-column: 1 / -1; }
   .agenda__hora { text-align: right; }
+
+  /* La pastilla no debe ocupar todo el ancho de su celda. */
+  .agenda__fila .etiqueta-estado { grid-column: 1 / -1; justify-self: start; }
+}
+
+/* --- Tarjeta de la próxima clase (panel de inicio) -------------------------- */
+
+/* Es lo primero que se ve al abrir la aplicación y lleva directo a la acción
+   más frecuente, así que es la única pieza con el degradado de fondo. */
+.proxima {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 24px 26px;
+  margin-bottom: 20px;
+  border-radius: var(--radio-xl);
+  background: var(--degradado-marca);
+  box-shadow: var(--sombra-marca);
+  color: #fff;
+}
+
+.proxima--vacia {
+  background: var(--panel);
+  border: 1px dashed var(--borde-fuerte);
+  box-shadow: none;
+  color: var(--texto);
+}
+
+.proxima__cuerpo { min-width: 0; }
+
+.proxima__etiqueta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  opacity: .85;
+  margin-bottom: 6px;
+}
+
+.proxima__titulo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+
+.proxima__detalle { font-size: .95rem; opacity: .9; margin-top: 4px; }
+
+.proxima__acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.proxima__marca {
+  padding: 5px 12px;
+  border-radius: var(--radio-pastilla);
+  background: rgba(255, 255, 255, .22);
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+/* Sobre el degradado, el botón primario se invierte: blanco con texto violeta. */
+.proxima .boton--primario {
+  background: #fff;
+  color: var(--marca-oscuro);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, .3);
+}
+.proxima .boton--primario:hover { background: #fff; filter: brightness(.96); }
+
+.proxima--vacia .boton--primario {
+  background: var(--degradado-marca);
+  color: #fff;
+}
+
+/* --- Lista de alumnos con asistencia baja ---------------------------------- */
+
+.riesgo { list-style: none; margin: 0 0 14px; padding: 0; }
+
+.riesgo__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 12px;
+  border-radius: var(--radio-chico);
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.riesgo__fila + .riesgo__fila { border-top: 1px solid var(--borde); }
+.riesgo__fila:hover { background: var(--panel-hundido); }
+
+.riesgo__nombre { display: flex; flex-direction: column; font-weight: 700; min-width: 0; }
+.riesgo__nombre small { color: var(--texto-suave); font-weight: 500; font-size: .79rem; }
+
+@media (max-width: 720px) {
+  .proxima { padding: 20px; gap: 16px; }
+  .proxima__titulo { font-size: 1.2rem; }
+  .proxima__acciones { width: 100%; }
+  .proxima__acciones .boton { flex: 1; }
+  .riesgo__fila { gap: 10px; }
 }
