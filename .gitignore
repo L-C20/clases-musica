@@ -5,6 +5,11 @@ node_modules/
 .env
 .env.local
 
+# Listas de alumnos -- NUNCA subir: son nombres de menores y el repositorio
+# es publico. Las listas viven solo en esta computadora y en la base.
+db/planteles/*
+!db/planteles/ejemplo.txt
+
 # Logs
 *.log
 npm-debug.log*

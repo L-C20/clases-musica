@@ -108,6 +108,43 @@ También se pueden crear las escuelas a mano desde la pantalla de Escuelas.
 
 ---
 
+## Cargar grados y alumnos de una lista
+
+Cargar un grado entero a mano son treinta ventanas de formulario. `cargar_plantel`
+lee la lista tal como viene del colegio y la mete de una vez:
+
+```bash
+node db/cargar_plantel.js db/planteles/1722-la-fundicion.txt
+```
+
+Sin `--aplicar` **no escribe nada**: muestra cuántos grados y alumnos crearía y
+termina. Conviene mirar siempre ese informe antes de agregar `--aplicar`.
+
+El formato del archivo está explicado en [`db/planteles/ejemplo.txt`](db/planteles/ejemplo.txt).
+En resumen: una línea sin coma es un grado, una línea con coma es un alumno
+(`Apellido, Nombre`), y lo que va entre paréntesis se ignora.
+
+Correrlo dos veces no duplica nada: un alumno se considera el mismo si ya hay
+otro con igual apellido y nombre en ese grado, sin distinguir mayúsculas ni
+acentos. Por eso, sumar a alguien que llegó a mitad de año es escribirlo en el
+archivo y volver a correrlo. Nunca da de baja a quien no figure en la lista:
+eso se decide alumno por alumno, desde la aplicación.
+
+### Las listas no se suben al repositorio
+
+`db/planteles/` está en el `.gitignore`, salvo el ejemplo. Son nombres de
+menores y este repositorio es público. Para cargar la base de Railway, la lista
+viaja por la entrada estándar en lugar de pasar por un commit:
+
+```bash
+railway ssh --service app "node db/cargar_plantel.js - --aplicar" < db/planteles/1722-la-fundicion.txt
+```
+
+El guion en lugar del nombre de archivo es lo que le dice al script que lea de
+la entrada estándar.
+
+---
+
 ## Estructura del proyecto
 
 ```

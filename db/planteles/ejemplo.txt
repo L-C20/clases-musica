@@ -1,0 +1,33 @@
+# =====================================================================
+# Ejemplo de lista de alumnos.
+#
+# Este es el UNICO archivo de esta carpeta que se sube al repositorio.
+# Las listas de verdad quedan afuera (ver .gitignore): son nombres de
+# menores y el repositorio es publico.
+# =====================================================================
+#
+# Formato:
+#
+#   - Una linea SIN coma es el nombre de un grado.
+#   - Una linea CON coma es un alumno: "Apellido, Nombre".
+#   - Lo que va entre parentesis al final se ignora, asi que se puede pegar
+#     la lista tal cual viene del colegio, con el "(1°)" y todo.
+#   - Las lineas que empiezan con # son comentarios.
+#
+# El orden de los grados en este archivo es el orden en que se ven en la
+# aplicacion.
+#
+# Para cargarlo:
+#
+#   node db/cargar_plantel.js db/planteles/ejemplo.txt            (ensayo)
+#   node db/cargar_plantel.js db/planteles/ejemplo.txt --aplicar
+
+escuela: 1733
+
+1° grado
+Perez, Ana Lucia
+Gomez Torres, Juan Manuel (1°)
+
+2° grado
+Diaz, Martina
+Lopez Ruiz, Bruno Ezequiel (2°)
