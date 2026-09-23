@@ -35,13 +35,23 @@ Antes hay que crear el archivo `.env` copiando `.env.example` y completando
 
 ## Publicar en Railway
 
-Hay dos caminos. El de la CLI no necesita GitHub.
+> **Esto ya está hecho.** El proyecto vive en Railway, en `clases-musica`,
+> con dos servicios: `app` y `Postgres`. Lo que sigue queda documentado por
+> si alguna vez hay que rehacerlo o montar un segundo entorno.
 
-### Camino A — con la CLI de Railway (más directo)
+### Publicar un cambio (el día a día)
+
+El servicio `app` está conectado al repositorio `L-C20/clases-musica`, rama
+`main`. Para publicar alcanza con:
 
 ```bash
-railway login
+git push
 ```
+
+Railway reconstruye y despliega solo. **Las migraciones nuevas se aplican en
+el arranque**, así que no hay ningún paso extra al agregar una.
+
+### Montar el proyecto desde cero
 
 ```bash
 railway init
@@ -52,24 +62,17 @@ railway add --database postgres
 ```
 
 ```bash
-railway up
+railway add --service app
 ```
 
-Después hay que configurar las variables (paso 3) y generar el dominio (paso 4).
-
-### Camino B — con GitHub
+Después, conectar el servicio al repositorio para que los push desplieguen solos:
 
 ```bash
-git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
-git push -u origin main
+railway service source connect --repo USUARIO/REPO --branch main --service app
 ```
 
-Luego, en [railway.app](https://railway.app):
-
-1. **New Project → Deploy from GitHub repo** y elegir este repositorio.
-2. En ese mismo proyecto: **New → Database → Add PostgreSQL**.
-
-La ventaja de este camino es que cada `git push` despliega solo.
+Queda configurar las variables (abajo) y generar el dominio con
+`railway domain --service app`.
 
 ### 3. Configurar las variables de entorno
 
@@ -93,19 +96,15 @@ En **Settings → Networking → Generate Domain**.
 ### 5. Cargar las escuelas
 
 Las migraciones se aplican solas al arrancar, pero los datos iniciales no.
-Para cargar las cuatro escuelas, desde la pestaña de la base en Railway
-(**Data → Query**) pegar el contenido de `db/seed.sql`.
-
-También se pueden crear a mano desde la pantalla de Escuelas.
-
-### Cada cambio posterior
+La forma más simple es correr el seed dentro del contenedor, que es el único
+lugar con acceso a la base interna de Railway:
 
 ```bash
-git push
+railway ssh --service app npm run db:seed
 ```
 
-Railway reconstruye y despliega solo. Las migraciones nuevas se aplican en el
-arranque.
+Ese mismo comando sirve para cualquier consulta contra la base de producción.
+También se pueden crear las escuelas a mano desde la pantalla de Escuelas.
 
 ---
 
