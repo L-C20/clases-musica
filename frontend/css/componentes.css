@@ -442,9 +442,12 @@ textarea.control { resize: vertical; line-height: 1.5; }
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 18px;
-  background: rgba(23, 23, 51, .42);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  /* Sin backdrop-filter. En este proyecto ya nos costo caro una vez: un
+     elemento que lo tiene se vuelve el bloque contenedor de sus hijos
+     position:fixed. Ademas, en varios navegadores de celular desalinea el
+     area sensible al toque respecto de lo que se ve. Un fondo un poco mas
+     oscuro separa igual de bien y no tiene ninguno de esos riesgos. */
+  background: rgba(23, 23, 51, .5);
   animation: aparecer .15s ease-out;
 }
 

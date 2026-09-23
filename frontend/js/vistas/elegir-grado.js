@@ -62,8 +62,11 @@ function tarjeta({ nombreIcono, titulo, detalle, alTocar, apagada = false }) {
  * grados:   la lista completa, tal como la devuelve la cache.
  * escuelas: todas las escuelas, incluso las que todavia no tienen grados.
  * onElegir: se llama con el id del grado elegido.
+ * onElegirEscuela: si se pasa, aparece ademas una tarjeta para ver la escuela
+ *   entera sin bajar a un grado. La usa Alumnos; Asistencia y Notas no, porque
+ *   una planilla es siempre de UN grado.
  */
-export function elegirGrado({ grados, escuelas: todasLasEscuelas = [], onElegir }) {
+export function elegirGrado({ grados, escuelas: todasLasEscuelas = [], onElegir, onElegirEscuela = null }) {
   const caja = el('div', { clase: 'eleccion' });
 
   /** null = mostrando las escuelas; un id = mostrando los grados de esa. */
@@ -130,6 +133,7 @@ export function elegirGrado({ grados, escuelas: todasLasEscuelas = [], onElegir 
   function dibujarGrados() {
     const suyos = grados.filter((g) => g.escuela_id === escuelaAbierta);
     const escuela = suyos[0]?.escuela_nombre || '';
+    const alumnos = suyos.reduce((total, g) => total + (Number(g.total_alumnos) || 0), 0);
 
     agregar(caja,
       el('div', { clase: 'eleccion__cabecera' },
@@ -144,6 +148,14 @@ export function elegirGrado({ grados, escuelas: todasLasEscuelas = [], onElegir 
         el('p', { clase: 'eleccion__paso' }, escuela)
       ),
       el('div', { clase: 'tarjetas' },
+        onElegirEscuela
+          ? tarjeta({
+              nombreIcono: 'alumnos',
+              titulo: `Todos los de ${escuela}`,
+              detalle: `${plural(alumnos, 'alumno')} en ${plural(suyos.length, 'grado')}`,
+              alTocar: () => onElegirEscuela(escuelaAbierta),
+            })
+          : null,
         ...suyos.map((g) => tarjeta({
           nombreIcono: 'grados',
           titulo: g.nombre,

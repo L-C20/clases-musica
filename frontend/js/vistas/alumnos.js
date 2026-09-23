@@ -17,6 +17,7 @@ import {
   el, vaciar, encabezado, boton, botonIcono, tabla, etiquetaEstado,
   cargando, vacio, aviso, formulario, confirmar,
 } from '../ui.js';
+import { elegirGrado } from './elegir-grado.js';
 
 export async function vistaAlumnos(contenedor, parametros = {}) {
   let escuelaFiltro = parametros.escuela || '';
@@ -25,6 +26,9 @@ export async function vistaAlumnos(contenedor, parametros = {}) {
   let mostrarInactivos = false;
 
   const escuelas = await opcionesEscuelas();
+  const escuelasCompletas = await estado.escuelas();
+  const gradosCompletos = await estado.grados();
+
   const lista = el('div', {});
 
   // Si se llego con ?grado=ID, dejamos sincronizada la escuela de ese grado.
@@ -98,7 +102,40 @@ export async function vistaAlumnos(contenedor, parametros = {}) {
     lista
   );
 
+  /*
+   * Sin ningun criterio elegido, la pantalla no es una lista de 62 alumnos
+   * seguidos: es el mismo paso a paso por escuela que Asistencia y Notas.
+   *
+   * La barra de filtros sigue arriba, asi que el buscador esta siempre a mano
+   * para ir directo a un alumno por nombre, y volver al principio es poner
+   * "Todas las escuelas".
+   */
+  function mostrarEleccion() {
+    vaciar(lista);
+    lista.append(elegirGrado({
+      grados: gradosCompletos,
+      escuelas: escuelasCompletas,
+      onElegirEscuela: async (id) => {
+        escuelaFiltro = String(id);
+        gradoFiltro = '';
+        selectorEscuela.value = escuelaFiltro;
+        await recargarSelectorGrados();
+        refrescar();
+      },
+      onElegir: async (id) => {
+        const grado = gradosCompletos.find((g) => g.id === id);
+        escuelaFiltro = String(grado.escuela_id);
+        gradoFiltro = String(id);
+        selectorEscuela.value = escuelaFiltro;
+        await recargarSelectorGrados();
+        refrescar();
+      },
+    }));
+  }
+
   async function refrescar() {
+    if (!escuelaFiltro && !gradoFiltro && !busqueda) return mostrarEleccion();
+
     vaciar(lista);
     lista.append(cargando());
 

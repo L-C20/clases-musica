@@ -90,10 +90,18 @@ export function encabezado(titulo, subtitulo, ...acciones) {
   );
 }
 
-export function boton(texto, { onClick, tipo = 'secundario', titulo = null, chico = false } = {}) {
+/**
+ * enviar:true lo convierte en el boton de envio de su formulario.
+ *
+ * Importa mas de lo que parece: un boton type="button" con un onClick depende
+ * de que ese click llegue. Uno de envio lo activa el navegador, y tambien
+ * responde al Enter desde cualquier campo y a las formas de activarlo que usan
+ * los lectores de pantalla.
+ */
+export function boton(texto, { onClick, tipo = 'secundario', titulo = null, chico = false, enviar = false } = {}) {
   return el('button', {
     clase: `boton boton--${tipo}${chico ? ' boton--chico' : ''}`,
-    type: 'button',
+    type: enviar ? 'submit' : 'button',
     title: titulo,
     onClick,
   }, texto);
@@ -358,7 +366,8 @@ export function formulario({ titulo, campos, valores = {}, textoGuardar = 'Guard
     return resultado;
   }
 
-  const botonGuardar = boton(textoGuardar, { tipo: 'primario', onClick: enviar });
+  // Sin onClick: lo dispara el envio del formulario, que es un solo camino.
+  const botonGuardar = boton(textoGuardar, { tipo: 'primario', enviar: true });
   let cerrar;
 
   async function enviar() {
@@ -372,6 +381,21 @@ export function formulario({ titulo, campos, valores = {}, textoGuardar = 'Guard
     } catch (error) {
       errorCaja.textContent = error.message;
       errorCaja.hidden = false;
+
+      /*
+       * El error tiene que VERSE.
+       *
+       * El cartel vive arriba del pie del modal. En un formulario largo, con
+       * la pantalla puesta abajo para llegar al boton, aparecia fuera de la
+       * vista: se tocaba Guardar, no se cerraba nada y no se veia ningun
+       * motivo. Parecia que el boton no hacia nada.
+       *
+       * Por eso ahora se lo trae a la vista, y ademas sale como aviso flotante,
+       * que se ve aunque el modal este desplazado en cualquier posicion.
+       */
+      errorCaja.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      aviso(error.message, 'error');
+
       botonGuardar.disabled = false;
       botonGuardar.textContent = textoGuardar;
     }
