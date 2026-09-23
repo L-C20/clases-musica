@@ -24,6 +24,7 @@ import {
   cargando, vacio, aviso, confirmar, plural,
 } from '../ui.js';
 import { icono } from '../iconos.js';
+import { elegirGrado } from './elegir-grado.js';
 import { hoy, formatearConDia, fechaDeEstaSemana, sumarDias } from '../fechas.js';
 
 const ESTADOS = [
@@ -43,6 +44,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
   let hayCambios = false;
 
   const todosLosGrados = await cache.grados();
+  const escuelas = await cache.escuelas();
 
   const panel = el('div', {});
 
@@ -107,22 +109,43 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
     cargar();
   }
 
+  /*
+   * La barra de filtros aparece recien cuando hay un grado elegido.
+   *
+   * Mientras no lo hay, la pantalla es el paso a paso de tarjetas y un
+   * desplegable arriba seria una segunda forma de hacer lo mismo, compitiendo
+   * con la primera. Una vez adentro si sirve: es la manera rapida de saltar a
+   * otro grado sin volver al principio.
+   */
+  const barra = el('div', { clase: 'barra-filtros', hidden: true }, selectorGrado, grupoFecha);
+
   vaciar(contenedor);
   contenedor.append(
     encabezado('Asistencia', 'Elegí grado y fecha, marcá y guardá'),
-    el('div', { clase: 'barra-filtros' }, selectorGrado, grupoFecha),
+    barra,
     panel
   );
 
   /* --- Carga de la planilla ---------------------------------------------- */
 
   function mostrarSeleccion() {
+    barra.hidden = true;
     vaciar(panel);
-    panel.append(vacio('Elegí un grado para cargar la asistencia.'));
+    panel.append(elegirGrado({
+      grados: todosLosGrados,
+      escuelas,
+      onElegir: (id) => {
+        gradoSel = String(id);
+        selectorGrado.value = gradoSel;
+        alCambiarGrado();
+      },
+    }));
   }
 
   async function cargar() {
     if (!gradoSel) return mostrarSeleccion();
+
+    barra.hidden = false;
 
     // Mantener la direccion al dia permite recargar o compartir el enlace.
     reemplazarDireccion(`#/asistencia?grado=${gradoSel}&fecha=${fechaSel}`);

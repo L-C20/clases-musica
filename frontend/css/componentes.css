@@ -93,6 +93,131 @@
   color: var(--marca);
 }
 
+/* --- Eleccion de escuela y grado (Asistencia y Notas) ----------------------
+   El paso a paso con el que se entra a una planilla. */
+
+.eleccion__paso {
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  margin-bottom: 12px;
+}
+
+.eleccion__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.eleccion__cabecera .eleccion__paso { margin-bottom: 0; }
+
+.eleccion__volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px 6px 9px;
+  margin-bottom: 12px;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--texto-medio);
+  background: var(--panel);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+
+.eleccion__volver:hover { border-color: var(--marca); color: var(--marca); }
+
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.tarjeta-eleccion {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  padding: 16px;
+  font: inherit;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-sutil);
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, transform .12s;
+}
+
+.tarjeta-eleccion:hover {
+  border-color: var(--marca);
+  box-shadow: var(--sombra-marca);
+  transform: translateY(-2px);
+}
+
+.tarjeta-eleccion:focus-visible {
+  outline: none;
+  border-color: var(--marca);
+  box-shadow: 0 0 0 4px var(--marca-suave);
+}
+
+.tarjeta-eleccion__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radio-chico);
+  background: var(--marca-suave);
+  color: var(--marca);
+}
+
+/* min-width:0 deja que el nombre largo se recorte con puntos suspensivos en
+   lugar de estirar la tarjeta y romper la grilla. */
+.tarjeta-eleccion__cuerpo { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+
+.tarjeta-eleccion__titulo {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--texto);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tarjeta-eleccion__detalle { font-size: .83rem; color: var(--texto-suave); font-weight: 600; }
+
+/* Una escuela sin grados se ve, pero no se puede tocar: llevaria a una lista
+   vacia. El detalle dice que le falta. */
+.tarjeta-eleccion--apagada {
+  cursor: default;
+  background: var(--panel-hundido);
+  box-shadow: none;
+}
+
+.tarjeta-eleccion--apagada:hover {
+  border-color: var(--borde);
+  box-shadow: none;
+  transform: none;
+}
+
+.tarjeta-eleccion--apagada .tarjeta-eleccion__icono {
+  background: var(--fondo);
+  color: var(--texto-suave);
+}
+
+.tarjeta-eleccion--apagada .tarjeta-eleccion__titulo { color: var(--texto-suave); }
+
+.tarjeta-eleccion__flecha { flex-shrink: 0; color: var(--texto-suave); }
+.tarjeta-eleccion:hover .tarjeta-eleccion__flecha { color: var(--marca); }
+
 /* --- Fecha con flechas de semana ------------------------------------------ */
 
 .grupo-fecha { display: flex; align-items: center; gap: 6px; }
@@ -442,6 +567,14 @@ textarea.control { resize: vertical; line-height: 1.5; }
   /* En el telefono la fecha se lleva el renglon entero: las flechas quedan en
      los extremos, lejos una de otra, y no se toca la equivocada. */
   .grupo-fecha .control { flex: 1; }
+
+  /* Una tarjeta por renglon: en 375px dos no entran sin que el nombre de la
+     escuela quede cortado a la mitad. */
+  .tarjetas { grid-template-columns: 1fr; gap: 10px; }
+  .tarjeta-eleccion { padding: 13px; gap: 11px; }
+  .tarjeta-eleccion__icono { width: 38px; height: 38px; }
+  .tarjeta-eleccion__titulo { font-size: .94rem; }
+  .tarjeta-eleccion__detalle { font-size: .78rem; }
 
   .control { padding: 9px 11px; font-size: .88rem; }
 

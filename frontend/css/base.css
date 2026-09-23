@@ -87,6 +87,11 @@
 
 * { box-sizing: border-box; }
 
+/* El navegador ya oculta lo que tiene [hidden], pero cualquier regla nuestra
+   que ponga display (un .barra-filtros con display:flex, por ejemplo) le gana
+   y el elemento vuelve a aparecer. Esto zanja la discusion. */
+[hidden] { display: none !important; }
+
 html, body { height: 100%; }
 
 body {

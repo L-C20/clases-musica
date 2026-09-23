@@ -22,6 +22,7 @@ import {
   cargando, vacio, aviso,
 } from '../ui.js';
 import { icono } from '../iconos.js';
+import { elegirGrado } from './elegir-grado.js';
 import { hoy, formatearConDia, sumarDias } from '../fechas.js';
 
 export async function vistaNotas(contenedor, parametros = {}) {
@@ -34,6 +35,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
   let hayCambios = false;
 
   const todosLosGrados = await cache.grados();
+  const escuelas = await cache.escuelas();
 
   const panel = el('div', {});
 
@@ -75,22 +77,36 @@ export async function vistaNotas(contenedor, parametros = {}) {
     botonIcono('siguiente', { titulo: 'Semana siguiente', onClick: () => moverSemanas(1) })
   );
 
+  // Igual que en Asistencia: la barra aparece cuando ya hay un grado elegido.
+  const barra = el('div', { clase: 'barra-filtros', hidden: true }, selectorGrado, grupoFecha);
+
   vaciar(contenedor);
   contenedor.append(
     encabezado('Notas', 'Cargá la nota de todo el grado de una vez'),
-    el('div', { clase: 'barra-filtros' }, selectorGrado, grupoFecha),
+    barra,
     panel
   );
 
   /* --- Carga -------------------------------------------------------------- */
 
   function mostrarSeleccion() {
+    barra.hidden = true;
     vaciar(panel);
-    panel.append(vacio('Elegí un grado para cargar las notas.'));
+    panel.append(elegirGrado({
+      grados: todosLosGrados,
+      escuelas,
+      onElegir: (id) => {
+        gradoSel = String(id);
+        selectorGrado.value = gradoSel;
+        cargar();
+      },
+    }));
   }
 
   async function cargar() {
     if (!gradoSel) return mostrarSeleccion();
+
+    barra.hidden = false;
 
     reemplazarDireccion(`#/notas?grado=${gradoSel}&fecha=${fechaSel}`);
 
