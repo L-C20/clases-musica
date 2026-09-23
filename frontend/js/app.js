@@ -22,6 +22,7 @@ import { vistaGrados } from './vistas/grados.js';
 import { vistaAlumnos } from './vistas/alumnos.js';
 import { vistaAsistencia } from './vistas/asistencia.js';
 import { vistaHistorial } from './vistas/historial.js';
+import { vistaNotas } from './vistas/notas.js';
 
 const RUTAS = {
   '/inicio': vistaInicio,
@@ -30,6 +31,7 @@ const RUTAS = {
   '/alumnos': vistaAlumnos,
   '/asistencia': vistaAsistencia,
   '/historial': vistaHistorial,
+  '/notas': vistaNotas,
 };
 
 const RUTA_POR_DEFECTO = '/inicio';

@@ -308,3 +308,59 @@
 
   .barra-guardar .boton { width: 100%; }
 }
+
+/* --- Planilla de notas ------------------------------------------------------ */
+
+.nota-campo {
+  flex-shrink: 0;
+  width: 74px;
+  height: 44px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--texto);
+  background: var(--panel);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-chico);
+  font-variant-numeric: tabular-nums;
+}
+
+.nota-campo:focus {
+  border-color: var(--principal);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--principal-suave);
+}
+
+.nota-campo--invalida {
+  border-color: var(--peligro);
+  background: var(--peligro-suave);
+  color: var(--peligro);
+}
+
+/* Las flechitas del input numerico roban espacio y no se usan con el teclado. */
+.nota-campo::-webkit-outer-spin-button,
+.nota-campo::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.nota-campo { -moz-appearance: textfield; appearance: textfield; }
+
+.nota-anterior {
+  flex-shrink: 0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef0f3;
+  color: var(--texto-suave);
+  font-size: .75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  /* El nombre ocupa su renglon y la nota queda grande y alineada a la derecha. */
+  .alumno__nombre { flex: 1 1 100%; }
+  .nota-anterior { margin-left: auto; }
+  .nota-campo { width: 84px; }
+}

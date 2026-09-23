@@ -45,8 +45,7 @@ router.use('/alumnos', require('./alumnos.routes'));
 router.use('/planilla', require('./planilla.routes'));
 router.use('/clases', require('./clases.routes'));
 
-// --- Rutas de las proximas fases -------------------------------------------
-// FASE 5:
-// router.use('/evaluaciones', require('./evaluaciones.routes'));
+// --- FASE 5 -----------------------------------------------------------------
+router.use('/notas', require('./notas.routes'));
 
 module.exports = router;
