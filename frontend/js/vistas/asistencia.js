@@ -43,6 +43,23 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
   let planilla = null;
   let hayCambios = false;
 
+  /*
+   * Una clase ya guardada se abre CERRADA: se lee, no se toca.
+   *
+   * La planilla de una clase que ya se dio es un dato terminado. Estando
+   * siempre abierta, en el celular alcanza un roce al desplazar la lista para
+   * cambiarle el estado a un alumno sin enterarse. Cerrada, para cambiar algo
+   * hay que decir que se quiere cambiar: el boton pasa a ser "Editar
+   * asistencia", y recien despues "Guardar cambios".
+   *
+   * Una clase nueva, en cambio, nace abierta: ahi cada toque de mas es tiempo
+   * perdido, que es justo lo que esta pantalla trata de evitar.
+   */
+  let editando = false;
+
+  /** planilla guardada + sin abrir. Lo recalcula cada dibujo. */
+  let bloqueada = false;
+
   const todosLosGrados = await cache.grados();
   const escuelas = await cache.escuelas();
 
@@ -166,6 +183,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       ])
     );
     hayCambios = false;
+    editando = !planilla.ya_registrada;
 
     dibujarPlanilla();
   }
@@ -178,24 +196,15 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
   let botonGuardar = null;
 
   /*
-   * El boton de guardar dice en que estado esta la planilla.
-   *
-   * Guardar dos veces seguidas no rompe nada: el guardado corrige, no duplica.
-   * Pero un boton que despues de guardar sigue ofreciendo "Guardar asistencia"
-   * deja la duda de si guardo o no, y la unica forma de sacarsela es tocarlo de
-   * nuevo. Apagado y diciendo "Asistencia guardada" la contesta solo.
-   *
-   * En cuanto se cambia una marca se prende otra vez, ahora como "Guardar
-   * cambios": lo cargado se puede editar las veces que haga falta.
+   * El boton dice, el solo, en que estado esta la planilla y que va a pasar si
+   * se lo toca. No hace falta ningun cartel arriba explicandolo.
    */
   function actualizarBotonGuardar() {
     if (!botonGuardar) return;
 
-    const guardada = Boolean(planilla?.ya_registrada);
-    botonGuardar.disabled = guardada && !hayCambios;
-
-    botonGuardar.textContent = botonGuardar.disabled ? 'Asistencia guardada'
-      : guardada ? 'Guardar cambios'
+    botonGuardar.disabled = false;
+    botonGuardar.textContent = bloqueada ? 'Editar asistencia'
+      : planilla?.ya_registrada ? 'Guardar cambios'
       : 'Guardar asistencia';
   }
 
@@ -224,6 +233,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       placeholder: 'Observación de la clase (opcional)',
       value: marca.observacion,
       hidden: marca.observacion === '',
+      disabled: bloqueada,
       onInput: (e) => {
         marcas.get(alumno.id).observacion = e.target.value;
         hayCambios = true;
@@ -235,6 +245,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       el('button', {
         type: 'button',
         clase: `estado estado--${opcion.valor}${marca.estado === opcion.valor ? ' estado--elegido' : ''}`,
+        disabled: bloqueada,
         title: opcion.texto,
         'aria-label': `${opcion.texto}: ${alumno.apellido}, ${alumno.nombre}`,
         onClick: (e) => {
@@ -265,6 +276,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
         el('button', {
           type: 'button',
           clase: 'alumno__nota',
+          disabled: bloqueada,
           title: 'Agregar una observación',
           onClick: () => {
             campoObservacion.hidden = !campoObservacion.hidden;
@@ -287,17 +299,23 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       return;
     }
 
+    bloqueada = planilla.ya_registrada && !editando;
+
     const campoTema = el('input', {
       clase: 'control',
       type: 'text',
       placeholder: 'Tema de la clase (opcional)',
       value: planilla.clase?.tema || '',
+      disabled: bloqueada,
       onInput: () => { hayCambios = true; actualizarResumen(); },
     });
 
     botonGuardar = boton('Guardar asistencia', {
       tipo: 'primario',
-      onClick: () => guardar(campoTema.value),
+      onClick: () => {
+        if (bloqueada) { editando = true; dibujarPlanilla(); return; }
+        guardar(campoTema.value);
+      },
     });
 
     agregar(panel,
@@ -306,22 +324,22 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
         el('p', { clase: 'clase-cabecera__fecha' }, formatearConDia(planilla.fecha))
       ),
 
-      planilla.ya_registrada
-        ? el('div', { clase: 'anuncio anuncio--info' },
-            el('strong', {}, 'Ya tiene asistencia cargada. '),
-            'Cambiá lo que necesites y guardá: se corrige, no se duplica.',
-            el('span', { clase: 'anuncio__extra' },
-              boton('Borrar esta clase', {
+      /*
+       * Con la planilla cerrada no hay nada para tocar: queda solo el resumen.
+       * "Borrar esta clase" vive aca adentro porque borrar es la version
+       * extrema de editar, y solo tiene sentido con la planilla abierta.
+       */
+      el('div', { clase: 'acciones-rapidas' },
+        resumen,
+        bloqueada ? null : el('div', { clase: 'acciones-rapidas__botones' },
+          boton('Todos presentes', { chico: true, onClick: marcarTodosPresentes }),
+          planilla.ya_registrada
+            ? boton('Borrar esta clase', {
                 chico: true, tipo: 'peligro',
                 onClick: () => borrarClase(planilla.clase.id),
               })
-            )
-          )
-        : null,
-
-      el('div', { clase: 'acciones-rapidas' },
-        resumen,
-        boton('Todos presentes', { chico: true, onClick: marcarTodosPresentes })
+            : null
+        )
       ),
 
       el('div', { clase: 'lista-alumnos' }, ...planilla.alumnos.map(filaAlumno)),

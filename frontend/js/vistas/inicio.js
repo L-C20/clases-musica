@@ -193,7 +193,6 @@ export async function vistaInicio(contenedor) {
         el('div', { clase: 'clase-item__arriba' },
           el('span', { clase: 'clase-item__hora' }, String(g.hora_inicio).slice(0, 5)),
           esHoy ? el('span', { clase: 'clase-item__hoy' }, 'Hoy') : null,
-          atrasada ? el('span', { clase: 'clase-item__atrasada' }, 'Ya pasó') : null,
           el('span', {
             clase: `etiqueta-estado etiqueta-estado--${g.cargada ? 'presente' : 'pendiente'}`,
           }, g.cargada ? 'Cargada' : 'Pendiente')

@@ -52,6 +52,32 @@
   margin-bottom: 10px;
 }
 
+/* Los botones de la derecha, juntos: la fila reparte resumen | botones. */
+.acciones-rapidas__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* --- Planilla cerrada -------------------------------------------------------
+   Una clase ya guardada se muestra apagada hasta tocar "Editar asistencia".
+   El estado elegido se sigue viendo a pleno: es el dato que se vino a mirar. */
+
+.estado:disabled { cursor: default; }
+.estado:disabled:not(.estado--elegido) { opacity: .35; }
+.alumno__nota:disabled { opacity: .3; cursor: default; }
+
+/* Safari en iPhone agrisa por su cuenta el texto de un campo apagado, al punto
+   de no poder leerlo. -webkit-text-fill-color es la unica forma de frenarlo. */
+.alumno__observacion:disabled,
+.campo--completo .control:disabled {
+  opacity: 1;
+  background: var(--fondo);
+  color: var(--texto-suave);
+  -webkit-text-fill-color: var(--texto-suave);
+  cursor: default;
+}
+
 .resumen {
   display: flex;
   gap: 14px;

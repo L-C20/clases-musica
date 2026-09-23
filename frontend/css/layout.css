@@ -333,17 +333,6 @@
 .clase-item--atrasada .clase-item__dia { color: var(--alerta); }
 .clase-item--atrasada .clase-item__hora { color: var(--alerta); }
 
-.clase-item__atrasada {
-  padding: 2px 8px;
-  border-radius: var(--radio-pastilla);
-  background: var(--alerta-suave);
-  color: var(--alerta);
-  font-size: .68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-
 /* Cuerpo */
 .clase-item__cuerpo {
   flex: 1;
