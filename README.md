@@ -35,18 +35,41 @@ Antes hay que crear el archivo `.env` copiando `.env.example` y completando
 
 ## Publicar en Railway
 
-### 1. Subir el proyecto a GitHub
+Hay dos caminos. El de la CLI no necesita GitHub.
+
+### Camino A — con la CLI de Railway (más directo)
+
+```bash
+railway login
+```
+
+```bash
+railway init
+```
+
+```bash
+railway add --database postgres
+```
+
+```bash
+railway up
+```
+
+Después hay que configurar las variables (paso 3) y generar el dominio (paso 4).
+
+### Camino B — con GitHub
 
 ```bash
 git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
 git push -u origin main
 ```
 
-### 2. Crear el proyecto en Railway
+Luego, en [railway.app](https://railway.app):
 
-1. Entrar a [railway.app](https://railway.app) e iniciar sesión con GitHub.
-2. **New Project → Deploy from GitHub repo** y elegir este repositorio.
-3. En ese mismo proyecto: **New → Database → Add PostgreSQL**.
+1. **New Project → Deploy from GitHub repo** y elegir este repositorio.
+2. En ese mismo proyecto: **New → Database → Add PostgreSQL**.
+
+La ventaja de este camino es que cada `git push` despliega solo.
 
 ### 3. Configurar las variables de entorno
 
