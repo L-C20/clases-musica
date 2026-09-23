@@ -174,6 +174,31 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
 
   const resumen = el('p', { clase: 'resumen' });
 
+  /** Se rearma en cada dibujo; lo guardamos para poder prenderlo y apagarlo. */
+  let botonGuardar = null;
+
+  /*
+   * El boton de guardar dice en que estado esta la planilla.
+   *
+   * Guardar dos veces seguidas no rompe nada: el guardado corrige, no duplica.
+   * Pero un boton que despues de guardar sigue ofreciendo "Guardar asistencia"
+   * deja la duda de si guardo o no, y la unica forma de sacarsela es tocarlo de
+   * nuevo. Apagado y diciendo "Asistencia guardada" la contesta solo.
+   *
+   * En cuanto se cambia una marca se prende otra vez, ahora como "Guardar
+   * cambios": lo cargado se puede editar las veces que haga falta.
+   */
+  function actualizarBotonGuardar() {
+    if (!botonGuardar) return;
+
+    const guardada = Boolean(planilla?.ya_registrada);
+    botonGuardar.disabled = guardada && !hayCambios;
+
+    botonGuardar.textContent = botonGuardar.disabled ? 'Asistencia guardada'
+      : guardada ? 'Guardar cambios'
+      : 'Guardar asistencia';
+  }
+
   function actualizarResumen() {
     const cuenta = { presente: 0, ausente: 0, tarde: 0, justificado: 0 };
     marcas.forEach((m) => { cuenta[m.estado] += 1; });
@@ -186,6 +211,8 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       el('span', { clase: 'resumen__dato resumen__dato--justificado' }, plural(cuenta.justificado, 'justificado')),
       hayCambios ? el('span', { clase: 'resumen__pendiente' }, 'Sin guardar') : null
     );
+
+    actualizarBotonGuardar();
   }
 
   function filaAlumno(alumno) {
@@ -268,9 +295,9 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       onInput: () => { hayCambios = true; actualizarResumen(); },
     });
 
-    const botonGuardar = boton('Guardar asistencia', {
+    botonGuardar = boton('Guardar asistencia', {
       tipo: 'primario',
-      onClick: () => guardar(campoTema.value, botonGuardar),
+      onClick: () => guardar(campoTema.value),
     });
 
     agregar(panel,
@@ -282,7 +309,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       planilla.ya_registrada
         ? el('div', { clase: 'anuncio anuncio--info' },
             el('strong', {}, 'Ya tiene asistencia cargada. '),
-            'Al guardar se corrige, no se duplica.',
+            'Cambiá lo que necesites y guardá: se corrige, no se duplica.',
             el('span', { clase: 'anuncio__extra' },
               boton('Borrar esta clase', {
                 chico: true, tipo: 'peligro',
@@ -318,7 +345,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
 
   /* --- Guardado ---------------------------------------------------------- */
 
-  async function guardar(tema, botonGuardar) {
+  async function guardar(tema) {
     botonGuardar.disabled = true;
     botonGuardar.textContent = 'Guardando...';
 
@@ -341,8 +368,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
       await cargar();
     } catch (error) {
       aviso(error.message, 'error');
-      botonGuardar.disabled = false;
-      botonGuardar.textContent = 'Guardar asistencia';
+      actualizarBotonGuardar();
     }
   }
 
