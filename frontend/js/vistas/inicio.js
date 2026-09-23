@@ -20,6 +20,7 @@ import { icono } from '../iconos.js';
 import { medidor } from '../graficos.js';
 import {
   fechaDeEstaSemana, formatear, nombreDeDia, nombreDeDiaCorto, diaDelMes, hoy, sumarDias,
+  horaActual, sumarMinutos,
 } from '../fechas.js';
 
 /** Umbral por debajo del cual un alumno entra en la lista de atención. */
@@ -33,18 +34,34 @@ function tarjetaNumero(numero, etiqueta, alHacerClic) {
 }
 
 /**
- * La próxima clase de cada grado, contando desde hoy.
+ * ¿Esta clase ya terminó?
  *
- * Si la clase de esta semana ya pasó, se corre a la semana siguiente. Así el
- * panel nunca queda mostrando una clase vieja: el viernes ya propone la del
- * lunes que viene.
+ * No alcanza con mirar el día: la clase de hoy a las 8:30 ya pasó cuando son
+ * las once de la mañana, y el panel no tiene por qué seguir ofreciéndola.
+ *
+ * Se compara contra la hora de FIN (inicio + duración), no la de inicio. Es a
+ * propósito: mientras estás dando la clase es justo cuando más necesitás
+ * tenerla a mano, así que recién se corre cuando la clase terminó de verdad.
  */
-function proximasClases(grados, hoyTexto) {
+function yaTermino(clase, hoyTexto, horaAhora) {
+  if (clase.fecha < hoyTexto) return true;
+  if (clase.fecha > hoyTexto) return false;
+  return sumarMinutos(clase.hora_inicio, clase.duracion_min || 60) <= horaAhora;
+}
+
+/**
+ * La próxima clase de cada grado, contando desde este momento.
+ *
+ * Si la clase de esta semana ya terminó, se corre a la semana siguiente. Así el
+ * panel nunca queda mostrando una clase vieja: el viernes ya propone la del
+ * lunes que viene, y a la tarde ya no propone la de la mañana.
+ */
+function proximasClases(grados, hoyTexto, horaAhora) {
   return grados
     .filter((g) => g.dia_semana !== null && g.hora_inicio)
     .map((g) => {
       let fecha = fechaDeEstaSemana(g.dia_semana);
-      if (fecha < hoyTexto) fecha = sumarDias(fecha, 7);
+      if (yaTermino({ ...g, fecha }, hoyTexto, horaAhora)) fecha = sumarDias(fecha, 7);
       return { ...g, fecha };
     })
     .sort((a, b) =>
@@ -58,6 +75,7 @@ export async function vistaInicio(contenedor) {
   const lunes = fechaDeEstaSemana(1);
   const domingo = fechaDeEstaSemana(0);
   const hoyTexto = hoy();
+  const horaAhora = horaActual();
 
   // Las cuatro consultas no dependen entre sí: salen juntas.
   const [grados, clasesDeLaSemana, reporteEscuelas, reporteAlumnos] = await Promise.all([
@@ -89,19 +107,19 @@ export async function vistaInicio(contenedor) {
   /*
    * Qué se muestra en la semana.
    *
-   * Una clase que ya pasó y quedó cargada no aporta nada: ocupa lugar arriba
+   * Una clase que ya terminó y quedó cargada no aporta nada: ocupa lugar arriba
    * de lo que todavía hay que hacer. Se saca de la lista.
    *
-   * Pero una clase que ya pasó y NO se cargó es justamente trabajo pendiente,
+   * Pero una clase que ya terminó y NO se cargó es justamente trabajo pendiente,
    * así que se queda y se marca como atrasada. Sacarla sería esconder lo
    * único que hay que ir a resolver.
    */
-  const agendaVisible = agenda.filter((g) => g.fecha >= hoyTexto || !g.cargada);
+  const agendaVisible = agenda.filter((g) => !yaTermino(g, hoyTexto, horaAhora) || !g.cargada);
   const semanaTerminada = agenda.length > 0 && agendaVisible.length === 0;
 
   /* --- Próxima clase ------------------------------------------------------- */
 
-  const proxima = proximasClases(grados, hoyTexto)[0] || null;
+  const proxima = proximasClases(grados, hoyTexto, horaAhora)[0] || null;
   const proximaCargada = proxima && yaCargadas.has(`${proxima.id}|${proxima.fecha}`);
 
   function tarjetaProximaClase() {
@@ -157,8 +175,9 @@ export async function vistaInicio(contenedor) {
    * La separación la hace el espacio entre tarjetas, no un filete.
    */
   function tarjetaDeClase(g) {
-    const esHoy = g.fecha === hoyTexto;
-    const atrasada = g.fecha < hoyTexto && !g.cargada;
+    const termino = yaTermino(g, hoyTexto, horaAhora);
+    const esHoy = g.fecha === hoyTexto && !termino;
+    const atrasada = termino && !g.cargada;
 
     return el('li', {
       clase: `clase-item${esHoy ? ' clase-item--hoy' : ''}${atrasada ? ' clase-item--atrasada' : ''}`,

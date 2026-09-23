@@ -32,6 +32,26 @@ export function hoy() {
   return aTexto(new Date());
 }
 
+/** La hora de ahora, como texto "HH:MM". */
+export function horaActual() {
+  const ahora = new Date();
+  return `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+}
+
+/**
+ * Suma minutos a una hora "HH:MM" y devuelve otra hora "HH:MM".
+ *
+ * Si se pasa de la medianoche devuelve "23:59": una clase no cruza el dia, y
+ * devolver "00:30" romperia cualquier comparacion de texto contra la hora
+ * actual, que es justo para lo que se usa esto.
+ */
+export function sumarMinutos(hora, minutos) {
+  const [h, m] = String(hora).slice(0, 5).split(':').map(Number);
+  const total = h * 60 + m + (minutos || 0);
+  if (total >= 24 * 60) return '23:59';
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+}
+
 /** Numero de dia de la semana (0=domingo) de una fecha en texto. */
 export function diaSemanaDe(texto) {
   return aFecha(texto).getDay();

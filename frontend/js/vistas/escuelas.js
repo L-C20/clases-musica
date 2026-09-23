@@ -8,7 +8,7 @@ import { api } from '../api.js';
 import { estado } from '../estado.js';
 import { navegar } from '../app.js';
 import {
-  el, vaciar, encabezado, boton, tabla, etiquetaEstado,
+  el, vaciar, encabezado, boton, botonIcono, tabla, etiquetaEstado,
   cargando, vacio, aviso, formulario, confirmar,
 } from '../ui.js';
 
@@ -73,15 +73,17 @@ export async function vistaEscuelas(contenedor) {
         titulo: 'Acciones',
         clase: 'col-acciones',
         render: (escuela) => el('div', { clase: 'acciones' },
-          boton('Grados', {
-            chico: true,
+          botonIcono('grados', {
             titulo: 'Ver los grados de esta escuela',
             onClick: () => navegar('/grados', { escuela: escuela.id }),
           }),
-          boton('Editar', { chico: true, onClick: () => abrirFormulario(escuela) }),
-          boton(escuela.activo ? 'Desactivar' : 'Activar', {
-            chico: true,
-            tipo: escuela.activo ? 'peligro' : 'secundario',
+          botonIcono('editar', {
+            titulo: `Editar ${escuela.nombre}`,
+            onClick: () => abrirFormulario(escuela),
+          }),
+          botonIcono(escuela.activo ? 'desactivar' : 'activar', {
+            titulo: escuela.activo ? `Desactivar ${escuela.nombre}` : `Activar ${escuela.nombre}`,
+            tipo: escuela.activo ? 'peligro' : 'marca',
             onClick: () => cambiarEstado(escuela),
           })
         ),

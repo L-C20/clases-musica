@@ -8,6 +8,8 @@
  * un nombre con < o > no puede romper la pagina ni inyectar HTML.
  */
 
+import { icono } from './iconos.js';
+
 /* ---------------------------------------------------------------------------
  * Creacion de elementos
  * ------------------------------------------------------------------------ */
@@ -95,6 +97,54 @@ export function boton(texto, { onClick, tipo = 'secundario', titulo = null, chic
     title: titulo,
     onClick,
   }, texto);
+}
+
+/**
+ * Boton de una sola accion, dibujado con un icono.
+ *
+ * Sirve para las columnas de acciones de los listados: tres botones con texto
+ * ("Editar", "Alumnos", "Desactivar") ocupan media fila y hacen que la tabla
+ * se lea peor que los datos que tiene al lado.
+ *
+ * El titulo NO es opcional: es lo unico que dice que hace el boton, asi que va
+ * como tooltip y tambien como aria-label, para quien navega con lector de
+ * pantalla o con el teclado.
+ */
+export function botonIcono(nombre, { titulo, onClick, tipo = 'normal' }) {
+  return el('button', {
+    clase: `boton-icono boton-icono--${tipo}`,
+    type: 'button',
+    title: titulo,
+    'aria-label': titulo,
+    onClick,
+  }, icono(nombre, { tamano: 18 }));
+}
+
+/**
+ * Select con las opciones repartidas en grupos (optgroup).
+ *
+ * opciones: [{ grupo, valor, texto }]
+ *
+ * Con esto un solo selector reemplaza a dos encadenados: en lugar de elegir
+ * la escuela y despues el grado, se ve la escuela como titulo del grupo y se
+ * elige el grado de una sola vez.
+ */
+export function selectorAgrupado({ opciones, valor = '', textoVacio, clase = 'control control--filtro', onCambio }) {
+  const grupos = new Map();
+  for (const o of opciones) {
+    if (!grupos.has(o.grupo)) grupos.set(o.grupo, []);
+    grupos.get(o.grupo).push(o);
+  }
+
+  return el('select', { clase, onChange: (e) => onCambio(e.target.value) },
+    el('option', { value: '' }, textoVacio),
+    ...[...grupos].map(([nombre, items]) =>
+      el('optgroup', { label: nombre },
+        ...items.map((o) =>
+          el('option', { value: String(o.valor), selected: String(o.valor) === String(valor) }, o.texto))
+      )
+    )
+  );
 }
 
 export function etiquetaEstado(activo) {

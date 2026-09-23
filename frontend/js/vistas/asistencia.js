@@ -17,10 +17,14 @@
  */
 
 import { api } from '../api.js';
-import { opcionesEscuelas, estado as cache } from '../estado.js';
+import { estado as cache } from '../estado.js';
 import { navegar, ponerGuardia, reemplazarDireccion } from '../app.js';
-import { el, vaciar, agregar, encabezado, boton, cargando, vacio, aviso, confirmar, plural } from '../ui.js';
-import { hoy, formatearConDia, fechaDeEstaSemana } from '../fechas.js';
+import {
+  el, vaciar, agregar, encabezado, boton, botonIcono, selectorAgrupado,
+  cargando, vacio, aviso, confirmar, plural,
+} from '../ui.js';
+import { icono } from '../iconos.js';
+import { hoy, formatearConDia, fechaDeEstaSemana, sumarDias } from '../fechas.js';
 
 const ESTADOS = [
   { valor: 'presente', letra: 'P', texto: 'Presente' },
@@ -30,7 +34,6 @@ const ESTADOS = [
 ];
 
 export async function vistaAsistencia(contenedor, parametros = {}) {
-  let escuelaSel = parametros.escuela || '';
   let gradoSel = parametros.grado || '';
   let fechaSel = parametros.fecha || hoy();
 
@@ -39,13 +42,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
   let planilla = null;
   let hayCambios = false;
 
-  const escuelas = await opcionesEscuelas();
   const todosLosGrados = await cache.grados();
-
-  // Si vino un grado por la direccion, se completa la escuela que le corresponde.
-  if (gradoSel && !escuelaSel) {
-    escuelaSel = String(todosLosGrados.find((g) => g.id === Number(gradoSel))?.escuela_id || '');
-  }
 
   const panel = el('div', {});
 
@@ -56,23 +53,22 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
 
   /* --- Selectores -------------------------------------------------------- */
 
-  const selectorEscuela = el('select', {
-    clase: 'control control--filtro',
-    onChange: (e) => {
-      escuelaSel = e.target.value;
-      gradoSel = '';
-      llenarGrados();
-      mostrarSeleccion();
-    },
-  },
-    el('option', { value: '' }, 'Elegí una escuela'),
-    ...escuelas.map((o) =>
-      el('option', { value: String(o.valor), selected: String(o.valor) === String(escuelaSel) }, o.texto))
-  );
-
-  const selectorGrado = el('select', {
-    clase: 'control control--filtro',
-    onChange: (e) => { gradoSel = e.target.value; alCambiarGrado(); },
+  /*
+   * Un solo selector para escuela y grado.
+   *
+   * Antes eran dos: elegir la escuela y recien ahi elegir el grado. Como cada
+   * grado pertenece a una sola escuela, el primer paso no agregaba informacion,
+   * solo un toque mas antes de poder trabajar. Agrupados, la escuela se sigue
+   * viendo como titulo y el grado se elige de una.
+   */
+  const selectorGrado = selectorAgrupado({
+    opciones: todosLosGrados.map((g) => ({
+      grupo: g.escuela_nombre, valor: g.id, texto: g.nombre,
+    })),
+    valor: gradoSel,
+    textoVacio: 'Elegí un grado',
+    clase: 'control control--filtro control--ancho',
+    onCambio: (valor) => { gradoSel = valor; alCambiarGrado(); },
   });
 
   const campoFecha = el('input', {
@@ -82,15 +78,24 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
     onChange: (e) => { fechaSel = e.target.value || hoy(); cargar(); },
   });
 
-  function llenarGrados() {
-    const grados = todosLosGrados.filter((g) => !escuelaSel || g.escuela_id === Number(escuelaSel));
-    vaciar(selectorGrado);
-    selectorGrado.append(
-      el('option', { value: '' }, 'Elegí un grado'),
-      ...grados.map((g) =>
-        el('option', { value: String(g.id), selected: String(g.id) === String(gradoSel) }, g.nombre))
-    );
+  /*
+   * Las flechas mueven una SEMANA, no un dia.
+   *
+   * Cada grado tiene una clase por semana: saltando de a siete dias se cae
+   * siempre sobre otra clase real de ese mismo grado. De a un dia habria que
+   * tocar seis veces para llegar a un dia en el que no hubo clase.
+   */
+  function moverSemanas(cantidad) {
+    fechaSel = sumarDias(fechaSel, cantidad * 7);
+    campoFecha.value = fechaSel;
+    cargar();
   }
+
+  const grupoFecha = el('div', { clase: 'grupo-fecha control--ancho' },
+    botonIcono('anterior', { titulo: 'Semana anterior', onClick: () => moverSemanas(-1) }),
+    campoFecha,
+    botonIcono('siguiente', { titulo: 'Semana siguiente', onClick: () => moverSemanas(1) })
+  );
 
   /** Al elegir un grado, se propone la fecha de su clase de esta semana. */
   function alCambiarGrado() {
@@ -102,12 +107,10 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
     cargar();
   }
 
-  llenarGrados();
-
   vaciar(contenedor);
   contenedor.append(
     encabezado('Asistencia', 'Elegí grado y fecha, marcá y guardá'),
-    el('div', { clase: 'barra-filtros barra-filtros--compacta' }, selectorEscuela, selectorGrado, campoFecha),
+    el('div', { clase: 'barra-filtros' }, selectorGrado, grupoFecha),
     panel
   );
 
@@ -115,7 +118,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
 
   function mostrarSeleccion() {
     vaciar(panel);
-    panel.append(vacio('Elegí una escuela y un grado para cargar la asistencia.'));
+    panel.append(vacio('Elegí un grado para cargar la asistencia.'));
   }
 
   async function cargar() {
@@ -217,7 +220,7 @@ export async function vistaAsistencia(contenedor, parametros = {}) {
             campoObservacion.hidden = !campoObservacion.hidden;
             if (!campoObservacion.hidden) campoObservacion.focus();
           },
-        }, '✎')
+        }, icono('editar', { tamano: 17 }))
       ),
       campoObservacion
     );

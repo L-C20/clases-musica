@@ -14,7 +14,7 @@ import { api } from '../api.js';
 import { estado, opcionesEscuelas, opcionesGrados } from '../estado.js';
 import { navegar } from '../app.js';
 import {
-  el, vaciar, encabezado, boton, tabla, etiquetaEstado,
+  el, vaciar, encabezado, boton, botonIcono, tabla, etiquetaEstado,
   cargando, vacio, aviso, formulario, confirmar,
 } from '../ui.js';
 
@@ -142,10 +142,19 @@ export async function vistaAlumnos(contenedor, parametros = {}) {
           titulo: 'Acciones',
           clase: 'col-acciones',
           render: (alumno) => el('div', { clase: 'acciones' },
-            boton('Editar', { chico: true, onClick: () => abrirFormulario(alumno) }),
-            boton(alumno.activo ? 'Dar de baja' : 'Reactivar', {
-              chico: true,
-              tipo: alumno.activo ? 'peligro' : 'secundario',
+            botonIcono('alumno', {
+              titulo: `Ver la ficha de ${alumno.apellido}, ${alumno.nombre}`,
+              onClick: () => navegar('/alumno', { id: alumno.id }),
+            }),
+            botonIcono('editar', {
+              titulo: `Editar ${alumno.apellido}, ${alumno.nombre}`,
+              onClick: () => abrirFormulario(alumno),
+            }),
+            botonIcono(alumno.activo ? 'desactivar' : 'activar', {
+              titulo: alumno.activo
+                ? `Dar de baja a ${alumno.nombre} ${alumno.apellido}`
+                : `Reactivar a ${alumno.nombre} ${alumno.apellido}`,
+              tipo: alumno.activo ? 'peligro' : 'marca',
               onClick: () => cambiarEstado(alumno),
             })
           ),

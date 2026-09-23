@@ -12,7 +12,7 @@ import { api } from '../api.js';
 import { estado, opcionesEscuelas } from '../estado.js';
 import { navegar } from '../app.js';
 import {
-  el, vaciar, encabezado, boton, tabla, etiquetaEstado,
+  el, vaciar, encabezado, boton, botonIcono, tabla, etiquetaEstado,
   cargando, vacio, aviso, formulario, confirmar,
 } from '../ui.js';
 
@@ -102,15 +102,17 @@ export async function vistaGrados(contenedor, parametros = {}) {
         titulo: 'Acciones',
         clase: 'col-acciones',
         render: (grado) => el('div', { clase: 'acciones' },
-          boton('Alumnos', {
-            chico: true,
+          botonIcono('alumnos', {
             titulo: 'Ver los alumnos de este grado',
             onClick: () => navegar('/alumnos', { grado: grado.id }),
           }),
-          boton('Editar', { chico: true, onClick: () => abrirFormulario(grado) }),
-          boton(grado.activo ? 'Desactivar' : 'Activar', {
-            chico: true,
-            tipo: grado.activo ? 'peligro' : 'secundario',
+          botonIcono('editar', {
+            titulo: `Editar ${grado.nombre}`,
+            onClick: () => abrirFormulario(grado),
+          }),
+          botonIcono(grado.activo ? 'desactivar' : 'activar', {
+            titulo: grado.activo ? `Desactivar ${grado.nombre}` : `Activar ${grado.nombre}`,
+            tipo: grado.activo ? 'peligro' : 'marca',
             onClick: () => cambiarEstado(grado),
           })
         ),

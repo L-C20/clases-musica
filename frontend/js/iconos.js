@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  * Iconos en SVG, dibujados a mano y embebidos.
  *
- * No se usa ninguna librería de iconos: son doce trazos. Traer una fuente de
+ * No se usa ninguna librería de iconos: son unos pocos trazos. Traer una fuente de
  * iconos entera (cientos de kilobytes) para esto sería absurdo, y además
  * dejaría la aplicación dependiendo de que un servidor ajeno esté en línea.
  *
@@ -50,6 +50,19 @@ const TRAZOS = {
 
   descargar:
     '<path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/>',
+
+  editar:
+    '<path d="M4 20h4L19 9a2.12 2.12 0 0 0-3-3L5 17v3z"/><path d="m15.5 6.5 3 3"/>',
+
+  desactivar:
+    '<circle cx="12" cy="12" r="8.5"/><path d="m6.5 6.5 11 11"/>',
+
+  activar:
+    '<circle cx="12" cy="12" r="8.5"/><path d="m8 12.2 2.6 2.6L16.2 9"/>',
+
+  anterior: '<path d="M14.5 5.5 8 12l6.5 6.5"/>',
+
+  siguiente: '<path d="M9.5 5.5 16 12l-6.5 6.5"/>',
 
   salir:
     '<path d="M14.5 4.5h3.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3.5"/>' +

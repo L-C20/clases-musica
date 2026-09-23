@@ -15,13 +15,16 @@
  */
 
 import { api } from '../api.js';
-import { opcionesEscuelas, estado as cache } from '../estado.js';
+import { estado as cache } from '../estado.js';
 import { navegar, ponerGuardia, reemplazarDireccion } from '../app.js';
-import { el, vaciar, agregar, encabezado, boton, cargando, vacio, aviso } from '../ui.js';
-import { hoy, formatearConDia } from '../fechas.js';
+import {
+  el, vaciar, agregar, encabezado, boton, botonIcono, selectorAgrupado,
+  cargando, vacio, aviso,
+} from '../ui.js';
+import { icono } from '../iconos.js';
+import { hoy, formatearConDia, sumarDias } from '../fechas.js';
 
 export async function vistaNotas(contenedor, parametros = {}) {
-  let escuelaSel = parametros.escuela || '';
   let gradoSel = parametros.grado || '';
   let fechaSel = parametros.fecha || hoy();
 
@@ -30,12 +33,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
   let planilla = null;
   let hayCambios = false;
 
-  const escuelas = await opcionesEscuelas();
   const todosLosGrados = await cache.grados();
-
-  if (gradoSel && !escuelaSel) {
-    escuelaSel = String(todosLosGrados.find((g) => g.id === Number(gradoSel))?.escuela_id || '');
-  }
 
   const panel = el('div', {});
 
@@ -45,23 +43,16 @@ export async function vistaNotas(contenedor, parametros = {}) {
 
   /* --- Selectores -------------------------------------------------------- */
 
-  const selectorEscuela = el('select', {
-    clase: 'control control--filtro',
-    onChange: (e) => {
-      escuelaSel = e.target.value;
-      gradoSel = '';
-      llenarGrados();
-      mostrarSeleccion();
-    },
-  },
-    el('option', { value: '' }, 'Elegí una escuela'),
-    ...escuelas.map((o) =>
-      el('option', { value: String(o.valor), selected: String(o.valor) === String(escuelaSel) }, o.texto))
-  );
-
-  const selectorGrado = el('select', {
-    clase: 'control control--filtro',
-    onChange: (e) => { gradoSel = e.target.value; cargar(); },
+  // Un solo selector con los grados agrupados por escuela, igual que en
+  // asistencia: elegir la escuela aparte era un paso que no decidia nada.
+  const selectorGrado = selectorAgrupado({
+    opciones: todosLosGrados.map((g) => ({
+      grupo: g.escuela_nombre, valor: g.id, texto: g.nombre,
+    })),
+    valor: gradoSel,
+    textoVacio: 'Elegí un grado',
+    clase: 'control control--filtro control--ancho',
+    onCambio: (valor) => { gradoSel = valor; cargar(); },
   });
 
   const campoFecha = el('input', {
@@ -71,22 +62,23 @@ export async function vistaNotas(contenedor, parametros = {}) {
     onChange: (e) => { fechaSel = e.target.value || hoy(); cargar(); },
   });
 
-  function llenarGrados() {
-    const grados = todosLosGrados.filter((g) => !escuelaSel || g.escuela_id === Number(escuelaSel));
-    vaciar(selectorGrado);
-    selectorGrado.append(
-      el('option', { value: '' }, 'Elegí un grado'),
-      ...grados.map((g) =>
-        el('option', { value: String(g.id), selected: String(g.id) === String(gradoSel) }, g.nombre))
-    );
+  // De a una semana, para caer siempre sobre otra clase del mismo grado.
+  function moverSemanas(cantidad) {
+    fechaSel = sumarDias(fechaSel, cantidad * 7);
+    campoFecha.value = fechaSel;
+    cargar();
   }
 
-  llenarGrados();
+  const grupoFecha = el('div', { clase: 'grupo-fecha control--ancho' },
+    botonIcono('anterior', { titulo: 'Semana anterior', onClick: () => moverSemanas(-1) }),
+    campoFecha,
+    botonIcono('siguiente', { titulo: 'Semana siguiente', onClick: () => moverSemanas(1) })
+  );
 
   vaciar(contenedor);
   contenedor.append(
     encabezado('Notas', 'Cargá la nota de todo el grado de una vez'),
-    el('div', { clase: 'barra-filtros barra-filtros--compacta' }, selectorEscuela, selectorGrado, campoFecha),
+    el('div', { clase: 'barra-filtros' }, selectorGrado, grupoFecha),
     panel
   );
 
@@ -94,7 +86,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
 
   function mostrarSeleccion() {
     vaciar(panel);
-    panel.append(vacio('Elegí una escuela y un grado para cargar las notas.'));
+    panel.append(vacio('Elegí un grado para cargar las notas.'));
   }
 
   async function cargar() {
@@ -210,7 +202,7 @@ export async function vistaNotas(contenedor, parametros = {}) {
             campoObservacion.hidden = !campoObservacion.hidden;
             if (!campoObservacion.hidden) campoObservacion.focus();
           },
-        }, '✎')
+        }, icono('editar', { tamano: 17 }))
       ),
       campoObservacion
     );

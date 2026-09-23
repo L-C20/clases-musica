@@ -45,6 +45,59 @@
 
 .acciones { display: flex; gap: 7px; flex-wrap: wrap; }
 
+/* --- Botones de icono ------------------------------------------------------
+   Para las acciones de cada fila de un listado. Cuadrados, del alto de un
+   boton chico, y sin texto: lo que hacen lo dice el tooltip.
+   El color solo aparece al pasar por encima, para que una tabla de veinte
+   filas no se convierta en una grilla de iconos de colores. */
+
+.boton-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-chico);
+  background: var(--panel);
+  color: var(--texto-suave);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s, transform .1s;
+}
+
+.boton-icono:hover {
+  background: var(--panel-hundido);
+  border-color: var(--texto-suave);
+  color: var(--texto);
+}
+
+.boton-icono:active { transform: translateY(1px); }
+
+.boton-icono:focus-visible {
+  outline: none;
+  border-color: var(--marca);
+  box-shadow: 0 0 0 4px var(--marca-suave);
+}
+
+.boton-icono--peligro:hover {
+  background: var(--peligro-suave);
+  border-color: var(--peligro);
+  color: var(--peligro);
+}
+
+.boton-icono--marca:hover {
+  background: var(--marca-suave);
+  border-color: var(--marca);
+  color: var(--marca);
+}
+
+/* --- Fecha con flechas de semana ------------------------------------------ */
+
+.grupo-fecha { display: flex; align-items: center; gap: 6px; }
+.grupo-fecha .control { width: auto; min-width: 0; }
+
 /* --- Controles de formulario ----------------------------------------------- */
 
 .control {
@@ -68,6 +121,9 @@
 }
 
 .control--filtro { width: auto; min-width: 190px; }
+/* El selector de grado muestra "escuela > grado": necesita mas lugar que un
+   filtro comun, y en celular se lleva la fila entera. */
+.control--ancho { min-width: 260px; }
 .control--buscador { flex: 1; min-width: 220px; }
 
 textarea.control { resize: vertical; line-height: 1.5; }
@@ -84,6 +140,17 @@ textarea.control { resize: vertical; line-height: 1.5; }
 }
 
 .casilla input { width: 17px; height: 17px; accent-color: var(--marca); }
+
+/* Dentro de la barra de filtros la casilla es un filtro mas, asi que se
+   dibuja como los demas controles y no como texto suelto al costado. */
+.barra-filtros .casilla {
+  padding: 9px 14px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 999px;
+  background: var(--panel);
+}
+
+.barra-filtros .casilla:hover { border-color: var(--texto-suave); }
 
 .campo-inline {
   display: inline-flex;
@@ -161,6 +228,11 @@ textarea.control { resize: vertical; line-height: 1.5; }
 
 .tabla .col-numero { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
 .tabla .col-acciones { width: 1%; white-space: nowrap; }
+
+/* La celda de acciones mide 1% para que la tabla le de solo lo que necesita.
+   Con botones de icono eso obliga a fijar nowrap tambien aca: si no, los
+   iconos se envuelven y quedan apilados en una columna de 34px. */
+.tabla .col-acciones .acciones { flex-wrap: nowrap; justify-content: flex-end; }
 
 .fila--inactiva { color: var(--texto-suave); background: var(--panel-hundido); }
 
@@ -365,20 +437,27 @@ textarea.control { resize: vertical; line-height: 1.5; }
 
   .boton { padding: 9px 13px; font-size: .84rem; gap: 6px; }
   .boton--chico { padding: 6px 10px; font-size: .78rem; }
+  .boton-icono { width: 36px; height: 36px; }
+
+  /* En el telefono la fecha se lleva el renglon entero: las flechas quedan en
+     los extremos, lejos una de otra, y no se toca la equivocada. */
+  .grupo-fecha .control { flex: 1; }
 
   .control { padding: 9px 11px; font-size: .88rem; }
 
-  /* Tres selectores apilados ocupaban 200px antes de ver un alumno. En la
-     barra compacta el primero va entero y los otros dos comparten renglon. */
-  .barra-filtros--compacta > *:first-child { width: 100%; }
-  .barra-filtros--compacta > *:not(:first-child) { width: calc(50% - 4px); }
+  /* Tres filtros apilados ocupaban 200px de pantalla antes de ver el primer
+     alumno. Por defecto comparten renglon de a dos; los que necesitan la fila
+     entera la piden con control--ancho. */
+  .barra-filtros > * { flex: 1 1 calc(50% - 4px); width: auto; min-width: 0; }
   /* Sin esto el min-width de los filtros los obliga a caer en renglones
      separados y no se gana nada. */
-  .barra-filtros--compacta .control { min-width: 0; }
+  .barra-filtros .control { min-width: 0; }
+  .barra-filtros .control--ancho,
+  .barra-filtros .control--buscador { flex-basis: 100%; }
 
-  /* Un boton de filtro no necesita todo el ancho: comparte renglon con los
-     demas en vez de apilarse uno abajo del otro. */
-  .barra-filtros .boton { width: auto; flex: 1 1 auto; }
+  /* Un boton o una casilla no necesitan medio ancho: ocupan lo suyo. */
+  .barra-filtros .boton,
+  .barra-filtros .casilla { flex: 0 0 auto; width: auto; }
 
   .tarjeta { padding: 14px; margin-bottom: 12px; }
   .tarjeta__titulo { font-size: .69rem; margin-bottom: 10px; letter-spacing: .05em; }
@@ -471,7 +550,11 @@ textarea.control { resize: vertical; line-height: 1.5; }
   }
 
   .tabla td.col-acciones::before { content: none; }
-  .tabla .col-acciones .acciones { width: 100%; }
+
+  /* Los iconos van juntos y a la derecha, como una barra de herramientas de la
+     tarjeta. Estirarlos a todo el ancho seria gastar una fila entera en tres
+     botones de 18px. */
+  .tabla .col-acciones .acciones { width: 100%; justify-content: flex-end; }
   .tabla .col-acciones .acciones .boton { flex: 1; }
 
   .form { grid-template-columns: 1fr; }

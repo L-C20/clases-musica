@@ -146,6 +146,9 @@
 .estado--justificado.estado--elegido { background: var(--estado-justificado); border-color: var(--estado-justificado); }
 
 .alumno__nota {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 38px;
   height: 38px;

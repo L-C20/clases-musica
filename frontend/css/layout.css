@@ -430,7 +430,6 @@
   .encabezado__acciones .boton { flex: 1; }
 
   .barra-filtros { padding: 10px; gap: 8px; margin-bottom: 14px; }
-  .barra-filtros > * { width: 100%; }
 
   .metricas { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
   .metrica { padding: 12px 13px; gap: 1px; }
